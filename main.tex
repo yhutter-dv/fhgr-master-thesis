@@ -1,0 +1,59 @@
+\pdfvariable minorversion=7
+\pdfvariable inclusioncopyfonts=1
+
+\documentclass{arialFHGR} % use either arialFHGR or timesFHGR
+\input{config/metadata}
+\input{config/preamble}
+\begin{document}
+
+    \renewcommand{\contentsname}{Inhaltsverzeichnis}
+    \renewcommand{\listfigurename}{Abbildungsverzeichnis}
+    \renewcommand{\listtablename}{Tabellenverzeichnis}
+    \renewcommand{\acronymname}{Abkürzungsverzeichnis}
+    \renewcommand{\lstlistlistingname}{\texorpdfstring{Programmcodeverzeichnis\bigskip}{Programmcodeverzeichnis}}
+    
+    
+    \pagenumbering{Roman}
+
+    \input{content/01_vorspann/01.1_titelblatt}
+    \include{content/01_vorspann/01.2_abstract}
+
+    \tableofcontents 
+        
+    % List of figures
+    \cleardoublepage
+    \phantomsection
+    \addcontentsline{toc}{chapter}{\listfigurename}
+    \listoffigures
+    
+    % List of tables
+    \cleardoublepage
+    \phantomsection
+    \addcontentsline{toc}{chapter}{\listtablename}
+    \listoftables
+
+    % List of acronyms
+    \printglossary[type=\acronymtype]
+    \cleardoublepage
+    \newpage
+    
+    \pagenumbering{arabic}
+    \include{content/02_textteil/einleitung}
+    \include{content/02_textteil/nutzen}
+    \include{content/02_textteil/visualization_pipeline}
+    \include{content/02_textteil/datengrundlage}
+    \include{content/02_textteil/algorithmen}
+    \include{content/02_textteil/frameworks_engines}
+    \include{content/02_textteil/datenvorverarbeitung}
+    \include{content/02_textteil/render_pipelines}
+    \include{content/02_textteil/swiss_terrain_3d}
+    \include{content/02_textteil/optimierungen}
+    \include{content/02_textteil/ausblick}
+    
+    \printbibliography[heading=bibintoc,title={Literaturverzeichnis}]
+    \include{content/03_nachspann/hilfsmittelverzeichnis}
+    \appendix
+    \include{content/03_nachspann/anhang}
+    \include{content/03_nachspann/eiderklaerung}
+    
+\end{document}
