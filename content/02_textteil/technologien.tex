@@ -1,10 +1,61 @@
-\chapter{Technologien}
+\chapter{Technologien zur Erstellung von 3D Computergrafiken}
 \label{chap_technologien}
-TODO
+Dieses Kapitel bietet einen Überblick über die Technologielandschaft zur Erstellung von 3D Computergrafiken. Konkret wird auf populäre Spiele Engines wie Unity, Godot sowie Unreal Engine eingegangen. Nebst den Engines werden auch verschiedene Frameworks wie ThreeJS, CelsiumJs sowie sokol thematisiert. Zu guter letzt wird noch auf immersive Technologien wie \acrshort{VR} sowie \acrshort{CAVE} eingegangen.
 
 \section{Engines}
-TODO
+Engines sind umfassende Programme, welche das Erstellen von 3D Computergrafiken und insbesondere Videospielen für jedermann zugänglich machen. Anders als Frameworks beinhalten diese integrierte Editoren, welche das Erstellen von Spielwelten und interaktiven Erlebnissen unterstützen, sowie fertige Komponenten für komplette Physik- und Audiosysteme anbieten. Wie bei normalen Programmen gibt es auch bei Spiele Engines kostenlose und kostenpflichtige Varianten. Nachfolgend wird auf die populärsten 3D-fokussierten Engines in beiden Bereichen eingegangen.  
 
+\subsection{Unity Engine}
+Rückblickend auf das Jahr 2024 bezogen ist die Unity Engine ist die meist genutzte Spiele Engine für kleinere bis mittelgrosse 3D Erlebnisse (siehe Abbildung \ref{fig_nutzung_spiele_engines}). Unity gehört zu den kostenpflichtigen Spiele Engines und unterstützt rund 20 verschiedene Plattformen. Angefangen bei den klassischen Desktop-Betriebssystemen wie MacOS, Linux und Windows über Webbrowser bis zu verschiedenen Spielekonsolen und VR-Headsets \parencite{unity_platform_support_2025}.
+\begin{figure}[H]
+    \caption{Übersicht Nutzung Spiele Engine nach Spielgrösse \parencite[S. 7]{vgi_report_2025}}
+    \includegraphics[width=.5\linewidth]{content/00_assets/uebersicht_nutzung_spielengines.png}
+    \label{fig_nutzung_spiele_engines}
+\end{figure}
+
+Die Spiele selbst werden in Unity innerhalb des Unity-Editors (siehe Abbildung \ref{fig_unity_editor}) und mithilfe der Programmiersprache C-Sharp entwickelt. 
+\begin{figure}[H]
+    \caption{Unity Editor \parencite{unity_editor_2019}}
+    \includegraphics[width=.5\linewidth]{content/00_assets/unity_editor.jpg}
+    \label{fig_unity_editor}
+\end{figure}
+
+Je nach Funktionsumfang gibt es verschiedene Lizenzmodelle bei Unity. Das Lizenzmodell ist jedoch nicht nur vom Funktionsumfang, sondern auch vom Jahreseinkommen (siehe Tabelle \ref{table_unity_preise}). Nebst den unten aufgeführten Lizenzen gibt es zudem noch eine Industry-Lizenz welche beim Erstellen von industriellen Anwendungen erworben werden muss (Preis auf Anfrage).
+\begin{table}[H]
+    \caption{Lizenzmodell Unity Engine mit Jahreskosten abhängig vom Jahreseinkommen \parencite{unity_preise_2025}}
+    \begin{tabularx}{\textwidth} {
+        >{\raggedright\arraybackslash}X 
+        >{\raggedright\arraybackslash}X
+        >{\raggedright\arraybackslash}X}
+            \hline
+            \textbf{Lizenzmodell} & {Jahreseinkommen} & {Jahreskosten}  \\
+            \hline
+            Personal & weniger als 200'000 USD & {Gratis}\\
+            Pro & zwischen 200'000 USD und 25'000'000 USD & 2'220 USD pro Nutzer \\
+            Enterprise & mehr als 25'000'000 USD &  auf Anfrage \\
+            \hline
+    \end{tabularx}
+    \bigbreak
+    \label{table_unity_preise}
+\end{table}
+
+\subsection{Unreal Engine}
+Über die Jahre haben viele Spielentwicklungsstudios bekannt gegeben, dass sie ihre eigene In-House Engine durch die Unreal Engine ersetzen werden \parencite[S. 11]{vgi_report_2025}. Unreal zeichnet sich durch die beeindruckenden visuellen Effekte aus. Unreal Engine wird jedoch nicht nur zur Entwicklung von Videospielen eingesetzt, sondern auch im Rahmen von Filmproduktionen sowie Architekturvisualisierungen (siehe Abbildung \ref{fig_unreal_engine_architektur}). Insbesondere in der Achitekturvisualisiserung werden auch verschiedene gängige Datenformate wie \acrfull{BIM} unterstützt \parencite{unreal_engine_architektur_2025}. Unreal Engine gehört ebenfalls zu den kommerziellen Spiele Engines. Beim Lizenzmodell wird zwischen zwei verschiedenen Kategorien unterschieden. Werden mit der Videospiele erstellt, so ist die Engine bis zu einem Umsatz von 1'000'000 USD komplett kostenlos. Danach müssen jweiles 5\% des Gewinns als Lizenzkosten abgegeben werden. Werden hingegen keine Videospiele sondern kommerzielle Produkte erstellt, so fallen nach der ersten Million Umsatz rund 1'800 USD pro Nutzer im Jahr als Lizenzgebühren an \parencite{unreal_engine_lizenzkosten_2025}. 
+\begin{figure}[H]
+    \caption{Unreal Engine Achitektur Visualisierung \parencite{unreal_engine_architektur_2025}}
+    \includegraphics[width=.5\linewidth]{content/00_assets/unreal_engine_achitektur.png}
+    \label{fig_unreal_engine_architektur}
+\end{figure}
+
+Unreal Engine selbst bietet dem Nutzer ebenfalls einen integrierten Editor sowie zahlreiche Tools um die Erstellung von immersiven Erlebnissen zu vereinfachen. Beispielsweise können mithilfe des Tools World Partitioning riesige 3D-Welten erstellt werden. Hierbei wird die Welt in ein Gitternetz unterteilt und die einzelnen Teilbereiche werden, wenn sich der Nutzer durch die Welt bewegt, dynamisch nachgeladen \parencite{unreal_engine_2025}. Auch beim Erstellen der notwendigen 3D Modelle unterstützt Untreal Engine mit diversen Tools. Quixel Megascan erlaubt das Integrieren von 3D Modellen mithilfe von fotogrammetrischen Verfahren sowie die Nutzung von hochauflösenden Texturen \parencite{unreal_engine_quixel_2025}. Anders als in Unity wird die systemnahe Programmiersprache C++ in Kombination mit der visuellen Scriptsprache Blueprints verwendet.
+
+\subsection{Godot Engine}
+Die Godot Engine ist Open Source, frei zugängliche und kostenlos. Godot ist ebenfalls sehr leichtgewichtig und benötigt nur rund 200MB - 1.5GB in der Basisinstallation im Vergleich zu den 5 - 20GB von Unity und den 30 bis 50GB von Unreal Engine. Wie Unity und Unreal unterstützt auch Godot diverse verschiedene Plattformen angefangen von den gängigsten Betriebssystemen wie MacOS, Linux und Windows über Webbrowser bis hin zu mobilen Endgeräten \parencite{godot_faq_2025}. Ebenso verfügt Godot über einen integrierten Editor, welcher die Erstellung von 3D-Welten erleichtert. Aufgrund der Open-Source-Natur sind zudem diverse Tools basierend auf der Godot Engine entwickelt worden. So können beispielsweise prozedurale Texturen mit Material Maker erstellt werden (siehe Abbildung \ref{fig_godot_material_maker}). Auch ist Godot anders als Unreal und Unity auch für iOS und iPad Geräte unter dem Namen Xogot als App verfügbar \parencite{godot_xogot_2025}.
+\begin{figure}[H]
+    \caption{Material Maker Tool zur Erzeugung von prozeduralen Texturen \parencite{godot_material_maker_2025}}
+    \includegraphics[width=.5\linewidth]{content/00_assets/godot_material_maker.png}
+    \label{fig_godot_material_maker}
+\end{figure}
 
 \section{Frameworks}
 TODO
