@@ -1,3 +1,63 @@
 \chapter{Algorithmen}
 \label{chap_algorithmen}
-TODO
+Da nun ein Grundverständnis sowohl über die Datengrundlage (siehe Kapitel \ref{chap_datengrundlage}), Framworks und Engines (siehe Kapitel \ref{chap_technologien}) als auch über die Art und Weise, wie Render Pipelines funktionieren, vorhanden ist, werden in diesem Kapitel die vorhandenen Algorithmen mit Fokus auf 3D-Terrainvisualisierungen behandelt. 
+
+\section{Quadtree}
+In der Terrainvisualisierung ist der Quadtree aufgrund der effizienten räumlichen Unterteilung häufig anzutreffen. Ein Quadtree ist eine baumähnliche Datenstruktur. Die einzelnen Knoten (auch Nodes genannt) haben hierbei genau vier (quad) oder keine Kinder, daher kommt auch der Name der Datenstruktur. Der Quadtree kann unter anderem dazu verwendet werden um grosse Räume effizient zu unterteilen oder auch um festzustellen, in welchem Bereich sich gewisse Objekte befinden (siehe Abbildung \ref{fig_quadtree}). Ein Quadtree kann ebenso als Basis für ein \acrfull{LOD}-System genutzt werden.  Die Grundidee hinter diesem System ist es, dass kleine hochauflösende Geometrien sich in unmittelbarer Nähe befinden und grössere, weniger gut aufgelöste Geometrien in der Ferne. Bezogen auf Abbildung \ref{fig_quadtree} kann etwa ein komplettes Gebirge in Kacheln unterteilt werden, und zwar so, dass es viele kleine Kacheln in der unmittelbaren Nähe gibt und grössere Kacheln für Elemente, welche in der Ferne liegen.
+\begin{figure}[H]
+    \caption{Quadtree Datenstruktur \parencite{quadtree_2016}}
+    \includegraphics[width=.6\linewidth]{content/00_assets/quadtree.png}
+    \label{fig_quadtree}
+\end{figure}
+Die Quadtree Datenstruktur wird anhand eines Kriteriums erstellt. Dieses Kriterium definiert wann neue Nodes generiert werden müssen. Ein mögliches Kriterium hierfür ist die 3D-Kameraposition des Betrachters in Bezug auf den Abstand zu deneinzelnen Nodes. Damit die Datenstruktur nicht unnötig verfeinert wird und infolgedessen die Laufzeitkomplexität steigt, ist es wichtig, ein Stoppkriterium wie die maximale Baumtiefe zu definieren.
+
+\section{Geometry Clipmap}
+Anders als Quadtrees basiert der Geometry Clipmap Algorithmus von Hoppe et. al. auf dem Konzept von ineinander verschachtelten Clipmaps (siehe Abbildung \ref{fig_geometry_clipmaps}). 
+\begin{figure}[H]
+    \caption{Geometry Clipmaps \parencite{gpu_gems_geometry_clipmaps_2005}}
+    \includegraphics[width=.6\linewidth]{content/00_assets/geometry_clipmaps.png}
+    \label{fig_geometry_clipmaps}
+\end{figure}
+Je nach Stufe der Clipmap erstreckt sich diese über einen grösseren Bereich, wobei die Geometrie (anzahl Vertices) kontant bleibt. Dies bedeutet, dass die Geometrie der Clipmaps nur einmal erstellt werden muss und nicht wie bei einem Quadtree abhängig von der Kameraposition jedes Mal neu berechnet wird. Die Clipmaps wandern zentriert um die Kameraposition über die Gebirgsdaten. Die Gebirgsdaten sind hierbei in Form von Heightmaps und Bilddateien vorhanden (siehe Kapitel \ref{chap_render_pipelines}). Wenn sich die Kameraposition ändert, muss jedoch nicht der gesamte Bereich, sondern nur ein Teilausschnitt der Daten neu berechnet werden. Wie in Abbildung \ref{fig_geometry_clipmap_update} zu sehen ist, muss jeweils der rote Bereich, welcher sich durch die Veränderung der Kameraposition ergibt, neu berechnet werden.
+\begin{figure}[H]
+    \caption{Geometry Clipmap Update \parencite{gpu_gems_geometry_clipmaps_2005}}
+    \includegraphics[width=.6\linewidth]{content/00_assets/geometry_clipmap_update.png}
+    \label{fig_geometry_clipmap_update}
+\end{figure}
+
+\section{Virtual Textures}
+Immersive 3D-Terrainvisualisierungen benötigen hochauflösende Texturen, um überzeugend zu wirken. Dies ist besonders in \acrshort{CAVE}-Systemen unabdingbar, da die 3D-Visualisierungen an grosse Wände projiziert werden und daher eine entsprechend hohe Auflösung benötigen. Moderne Grafikkarten können mittlerweile Texturen bis zu einer Auflösung von 4k (3840x2160px) problemlos darstellen. Oft sind jedoch die Texturen für grosse Gebirge um Faktoren grösser. Der swissIMAGE-Datensatz in der höchsten Auflösung von 10cm pro Pixel benötigt für einen km$^2$ eine Auflösung von 10'000 auf 10'000 Bildpunkten. Um dieser Problematik entgegenzuwirken, gibt es mehrere Varianten. Zum einen kann eine Bildpyramide berechnet werden, welche das Bild in kleinere Teilbereiche zerlegt und diese mithilfe einer bilinearen Interpolation herunterskaliert. Es können jedoch auch Virtual Textures (VT) verwendet werden. Die Idee hinter Virtual Textures ist dass Bilder welche nicht in den Videospeicher der Grafikkarte passen in kleinere Teilstücke zerlegt werden. Im Videospeicher existiert eine virtuelle Textur in welche die einzelnen sichtbaren Teilstücke kopiert werden. Eine Texture mit einer Auflösung von 32'000 auf 32'000 Bildpunkte kann in mehrere 500 auf 500 Teilstücke unterteilt werden. Anschliessend werden nur die sichtbaren Teilstücke (abhängig von der Kameraposition) in die virtuelle Textur, welche im Videospeicher liegt, hineinkopiert \parencite{threejs_virtual_texture}. Die Teilstücke im roten Bereich aus Abbildung  \ref{fig_virtual_textures} zeigen die Teilstücke, welche in die virtuelle Textur (rechts unten) hineinkopiert werden. Virtual Textures können auch mit einem Algorithmus wie Geometry Climaps kombiniert werden, um die Clipmaps über eine hochauflösende Textur wandern zu lassen, welche sonst nicht in den Videospeicher passen würde.
+\begin{figure}[H]
+    \caption{Virtual Texture \parencite{threejs_virtual_texture}}
+    \includegraphics[width=.3\linewidth]{content/00_assets/virtual_textures.png}
+    \label{fig_virtual_textures}
+\end{figure}
+
+\section{\acrfull{CDLOD}}
+Ein Hauptproblem welches bei \acrshort{LOD} basierten Systeme auftritt sind Diskrepanzen zwischen verschiedenen LOD-Level. Treffen Geometrien mit einer unterschiedlichen Auflösung aufeinander, passen die einzelnen Punkte der Dreiecke nicht perfekt aufeinander und es entstehen Risse (siehe rote Bereiche in Abbildung \ref{fig_lod_tjunctions}). 
+\begin{figure}[H]
+    \caption{Geometrische Diskrepanzen zwischen verschiedenen LOD-Level \parencite{frostbite_terrain_rendering_2007}}
+    \includegraphics[width=.3\linewidth]{content/00_assets/lod_tjunctions.png}
+    \label{fig_lod_tjunctions}
+\end{figure}
+
+\newpage
+Filip Strugar löst diese Problematik mit seinem \acrfull{CDLOD} Algorithmus auf elegante Art und Weise. Der Algorithmus basiert auf einem Quadtree (siehe Abbildung \ref{fig_cdlod_quadtree}). 
+\begin{figure}[H]
+    \caption{CDLOD Quadtree\parencite[S. 4]{strugar_cdlod_2009}}
+    \includegraphics[width=.4\linewidth]{content/00_assets/cdlod_quadtree.png}
+    \label{fig_cdlod_quadtree}
+\end{figure}
+Um das Problem mit den verschiedenen LOD-Leveln zu lösen, werden Übergangsbereiche (morph areas) definiert (siehe Abbildung \ref{fig_cdlod_morph_areas}).
+\begin{figure}[H]
+    \caption{CDLOD Übergangsbereiche \parencite[S. 4]{strugar_cdlod_2009}}
+    \includegraphics[width=.4\linewidth]{content/00_assets/cdlod_morph_areas.png}
+    \label{fig_cdlod_morph_areas}
+\end{figure}
+Innerhalb dieses Übergangsbereiches werden die Positionen der einzelnen Punkte der Geometrie vom aktuellen zum nächsten LOD Level interpoliert und passen somit perfekt aufeinander. Die Interpolation von Punkten einer Geometrie wird auch als Vertex Morphing bezeichnet. Abbildung \ref{fig_cdlod_vertex_morphing} zeigt, wie sich die Punkte auf einem Gitternetz abhängig von einem Interpolationsfaktor (von 0 bis 1) verändern. 
+\begin{figure}[H]
+    \caption{CDLOD - Interpolation der einzelnen Punkte\parencite[S. 8]{strugar_cdlod_2009}}
+    \includegraphics[width=.4\linewidth]{content/00_assets/cdlod_vertex_morphing.png}
+    \label{fig_cdlod_vertex_morphing}
+\end{figure}
+Eine Limitierung dieses Algorithmus ist dass sich die LOD-Level nur um ein Level unterscheiden dürfen. Dies bedeutet, dass auch der Quadtree entsprechend ausbalanciert sein muss. Ein weiterer positiver Nebeneffekt des Vertex Morphing ist dass es auch keine sogenannten Pop-in-Effekte gibt. Pop-in-Effekte entstehen, wenn Geometrien plötzlich aus dem Nichts vor dem Betrachter auftauchen. Da die verschiedenen Geometrien jedoch abhängig von der Kameraposition und der Distanz zu den Übergangsbereichen interpoliert werden, ist dieser Effekt nicht sichtbar \parencite[S. 3]{strugar_cdlod_2009}. Die fliessenden Übergangsbereiche, welche abhängig von der Kameradistanz sind, geben diesem Algorithmus auch seinen entsprechenden Namen (Continuous Distance-Dependent Level of Detail).
