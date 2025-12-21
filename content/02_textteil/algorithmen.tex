@@ -51,13 +51,13 @@ Filip Strugar löst diese Problematik mit seinem \acrfull{CDLOD} Algorithmus auf
 Um das Problem mit den verschiedenen LOD-Leveln zu lösen, werden Übergangsbereiche (morph areas) definiert (siehe Abbildung \ref{fig_cdlod_morph_areas}).
 \begin{figure}[H]
     \caption{CDLOD Übergangsbereiche \parencite[S. 4]{strugar_cdlod_2009}}
-    \includegraphics[width=.4\linewidth]{content/00_assets/cdlod_morph_areas.png}
+    \includegraphics[width=.6\linewidth]{content/00_assets/cdlod_morph_areas.png}
     \label{fig_cdlod_morph_areas}
 \end{figure}
 Innerhalb dieses Übergangsbereiches werden die Positionen der einzelnen Punkte der Geometrie vom aktuellen zum nächsten LOD Level interpoliert und passen somit perfekt aufeinander. Die Interpolation von Punkten einer Geometrie wird auch als Vertex Morphing bezeichnet. Abbildung \ref{fig_cdlod_vertex_morphing} zeigt, wie sich die Punkte auf einem Gitternetz abhängig von einem Interpolationsfaktor (von 0 bis 1) verändern. 
 \begin{figure}[H]
-    \caption{CDLOD - Interpolation der einzelnen Punkte\parencite[S. 8]{strugar_cdlod_2009}}
-    \includegraphics[width=.4\linewidth]{content/00_assets/cdlod_vertex_morphing.png}
+    \caption{CDLOD - Interpolation der einzelnen Punkte \parencite[S. 8]{strugar_cdlod_2009}}
+    \includegraphics[width=.6\linewidth]{content/00_assets/cdlod_vertex_morphing.png}
     \label{fig_cdlod_vertex_morphing}
 \end{figure}
 Eine Limitierung dieses Algorithmus ist dass sich die LOD-Level nur um ein Level unterscheiden dürfen. Dies bedeutet, dass auch der Quadtree entsprechend ausbalanciert sein muss. Ein weiterer positiver Nebeneffekt des Vertex Morphing ist dass es auch keine sogenannten Pop-in-Effekte gibt. Pop-in-Effekte entstehen, wenn Geometrien plötzlich aus dem Nichts vor dem Betrachter auftauchen. Da die verschiedenen Geometrien jedoch abhängig von der Kameraposition und der Distanz zu den Übergangsbereichen interpoliert werden, ist dieser Effekt nicht sichtbar \parencite[S. 3]{strugar_cdlod_2009}. Die fliessenden Übergangsbereiche, welche abhängig von der Kameradistanz sind, geben diesem Algorithmus auch seinen entsprechenden Namen (Continuous Distance-Dependent Level of Detail).
