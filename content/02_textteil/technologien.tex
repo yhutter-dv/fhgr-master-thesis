@@ -87,6 +87,7 @@ Nebst dem Browser gibt es natürlich auch native Applikationen, welche direkt au
 \end{figure}
 
 \subsection{Electron}
+\label{chap_electron}
 Es wurden sowohl webbasierte als auch native Frameworks thematisiert. Webbasierte Frameworks haben im Gegensatz zu den nativen Frameworks den Vorteil, dass keine Installation notwendig ist und sie auf einem breiten Spektrum von Endgeräten lauffähig sind. Der Nachteil von webbasierten Frameworks abgesehen von der grösseren Ressourcenauslastung, liegt auch beim eingeschränkten Zugriff auf Dinge wie Multithreading sowie auf das Dateisystem. Electron\footnote{\url{https://www.electronjs.org/}} ist ein Framework, welches browserbasierten Anwendungen erlaubt, nativ auf dem Betriebssystem ausgeführt zu werden. Hierzu verpackt Electron einen Chromium basierter Browser sowie eine NodeJs Runtime in die native Anwendung \parencite{electron_documentation_2025}. Hierdurch steigt der eigentliche Festplattenverbrauch da neben der eigentlichen browserbasierten Anwendung noch ein kompletter Browser (Chromium) und eine JavaScript-Laufzeitumgebung (NodeJs) mitausgeliefert wird, jedoch können so Browseranwendungen nativ auf dem Betriebssystem laufen und Zugriff auf diverse Funktionalitäten wie Dateisystem, Kamera etc. erhalten \parencite{electron_why_2025}. Electron ist ebenfalls Open Source und steht unter der sehr freizügigen MIT Lizenz sowohl für private als auch kommerzielle Projekte ohne Einschränkungen zur Verfügung \parencite{electron_license_2021}.
 
 \subsection{Tauri}
@@ -104,6 +105,7 @@ Bei klassischen 3D Anwendungen befindet sich der Nutzer in der Regel vor einem B
 \end{figure}
 
 \subsection{\acrfull{CAVE}}
+\label{chap_cave}
 Anders als bei \acrshort{VR} ist bei einem \acrshort{CAVE}-System kein Headset notwendig. Für ein CAVE-System benötigt es einen Raum, in dem sich der Nutzer frei bewegen kann. Auf den Wänden des Raums werden projektierte Bilder dargestellt \parencite{cave_1992}. Dies gibt den Nutzern das Gefühl, dass sie sich inmitten der Visualisierung befinden. CAVE macht es im Gegensatz zu VR einfacher mit verschiedenen Personen zu kollaborieren. Mehrere Personen können gleichzeitig in einem Raum sein und miteinander über wichtige Aspekte der Visualisierung diskutieren (siehe Abbildung \ref{fig_cave_collaboration}). 
 \begin{figure}[H]
     \caption{Kollaboration in einem CAVE-System \parencite[S. 11]{cave_collaboration_2020}}

@@ -404,6 +404,7 @@ Um die Problematik mit der Übersetzung von TSL spezifischem Code auf die effekt
 Damit die Bilder für die Nutzung auf der Grafikkarte nicht dekodiert werden müssen, stehen spezielle Bildformate zur Verfügung. Eines dieser Bildformate ist das \acrfull{KTX} Format\footnote{\url{https://github.khronos.org/KTX-Specification/ktxspec.v2.html}}. Mithilfe dieses Formats werden die Bilder so vorbereitet, dass diese bereits in einem für die Grafikkarte optimalen Format vorliegen und nicht dekodiert werden müssen. Hierfür wurde die Datenvorverarbeitung entsprechend angepasst, sodass die Bilder im \acrshort{KTX}-Format erstellt werden.
 
 \subsubsection{Zukünftige Optimierungsmöglichkeiten}
+\label{chap_future_optimizations}
 Mithilfe weiterer Tools wie SpectorJS\footnote{\url{https://spector.babylonjs.com/}} kann jedes einzelne Bild auf der Grafikkarte im Detail analysiert werden. Hierbei zeigt sich, dass pro Geometrie (Quadtree Node) jeweils ein Draw Call Befehl an die Grafikkarte gesendet wird. Abbildung \ref{fig_spectorjs_draw_calls} zeigt, dass beispielsweise für das Gebirge im Raum Chur rund 89 Draw Calls notwendig sind. Diese Zahl steigt mit der Anzahl der Quadtree Nodes und somit mit der Grösse des Gebirges. Bei grossen Gebirgen kann es somit vorallem auf leistungsschwachen Endgeräten wie Smartphones zu Engpässen kommen.
 \begin{figure}[H]
     \caption{SpectorJS Anzahl Draw Calls für Raum Chur (Eigene Darstellung)}
