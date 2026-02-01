@@ -1,6 +1,6 @@
 \chapter{Technologien zur Erstellung von 3D Computergrafiken}
 \label{chap_technologien}
-Dieses Kapitel bietet einen Überblick über die Technologielandschaft zur Erstellung von 3D Computergrafiken. Konkret wird auf populäre Spiele Engines wie Unity, Godot sowie Unreal Engine eingegangen. Nebst den Engines werden auch verschiedene Frameworks wie Three.js sowie Babylon.js thematisiert. Abschliessend wird auf immersive Technologien wie \acrshort{VR} sowie \acrshort{CAVE} eingegangen.
+Dieses Kapitel bietet einen Überblick über die Technologielandschaft zur Erstellung von 3D Computergrafiken. Konkret wird auf populäre Spiele Engines wie Unity, Godot sowie Unreal Engine eingegangen. Nebst den Engines werden auch verschiedene Frameworks wie Three.js sowie Babylon.js thematisiert. Abschliessend wird auf immersive Technologien wie \acrfull{VR} sowie \acrfull{CAVE} eingegangen.
 
 \section{Engines}
 Engines sind umfassende Programme, welche das Erstellen von 3D Computergrafiken und insbesondere Videospielen für jedermann zugänglich machen. Anders als Frameworks beinhalten diese Programme integrierte Editoren, welche das Erstellen von 3D-Welten und interaktiven Erlebnissen vereinfachen. Für komplexe Elemente wie Physik- und Audiosysteme werden fertige Komponenten zur Verfügung gestellt. Auch im Bereich der Spiele Engines existieren sowohl kostenlose als auch kostenpflichtige Varianten. Nachfolgend werden die populärsten 3D-fokussierten Engines aus beiden Bereichen vorgestellt. 
@@ -106,7 +106,7 @@ Tauri\footnote{\url{https://v2.tauri.app}} hat wie Electron das Ziel, browserbas
 \section{Immersive Technologien}
 Frameworks und Engines helfen dabei, ansprechende 3D-Erlebnisse zu gestalten. Um jedoch ein immersives Erlebnis zu gewährleisten, reicht dies alleine nicht aus. Technologien wie \acrshort{VR} und \acrshort{CAVE}-Systeme tragen dazu bei, die Immersion für Personen zu erhöhen und ihnen das Gefühl zu vermitteln, sich mitten im virtuellen Erlebnis zu befinden.
 
-\subsection{\acrfull{VR}}
+\subsection{Virtual Reality}
 Bei klassischen 3D Anwendungen befinden sich Personen in der Regel vor dem Bildschirm. \acrshort{VR} funktioniert anders. Anstelle eines Bildschirms werden ein \acrshort{VR}-Headset sowie entsprechende Controller verwendet (siehe Abbildung \ref{fig_vr_headset_controller}). Dies sorgt für ein besonders immersives Erlebnis. Mittels Controller können Personen sich durch die virtuelle Welt bewegen, während das Headset eine freie Wahl der Blickrichtung erlaubt. Voraussetzung für ein überzeugendes immersives Erlebnis sind jedoch ausreichender Bewegungsfreiraum sowie eine korrekte Kalibrierung der Geräte. Moderne Browser und Webframeworks wie Three.js und Babylon.js erlauben es, VR-Anwendungen direkt innerhalb des Browsers mithilfe der WebXR\footnote{\url{https://immersiveweb.dev/}}-API umzusetzen. VR-Anwendungen sind somit nicht nur auf native Plattformen und mobile Endgeräte beschränkt und erhalten eine noch breitere Reichweite und Adaption.
 \begin{figure}[H]
     \caption{Person mit VR-Headset und Controller \parencite{vr_headset_controller}}
@@ -114,7 +114,7 @@ Bei klassischen 3D Anwendungen befinden sich Personen in der Regel vor dem Bilds
     \label{fig_vr_headset_controller}
 \end{figure}
 
-\subsection{\acrfull{CAVE}}
+\subsection{Cave automatic virtual environment}
 \label{chap_cave}
 Im Gegensatz zu \acrshort{VR} ist bei einem \acrshort{CAVE}-System kein Headset erforderlich. Stattdessen werden ein Raum, in dem sich Personen frei bewegen können, sowie entsprechende Projektoren und Rechner benötigt. Während sich die Personen in der Raummitte befinden, wird die Visualisierung auf die umgebenden Wände projiziert \parencite{cave_1992}. Dadurch entsteht der Eindruck, sich mitten innerhalb der Visualisierung zu befinden. Ein Vorteil von CAVE-Systemen besteht in der einfachen Möglichkeit zur Kollaboration. Mehrere Beteiligte können sich gleichzeitig im selben Raum aufhalten und zentrale Aspekte der Visualisierung gemeinsam diskutieren (siehe Abbildung \ref{fig_cave_collaboration}). Besonders im Bildungsbereich und in wissenschaftlichen Visualisierungen ist dies ein grosser Vorteil \parencite{cave_collaboration_2020}.
 \begin{figure}[H]

@@ -284,7 +284,7 @@ Mittels Maus und Tastatur können sowohl die Position als auch der Betrachtungsw
 \section{Ästhetik}
 Three.js bietet diverse Möglichkeiten, um die Ästhetik einer 3D-Visualisierung zu beeinflussen. Ziel dieses Kapitels ist es, einen Überblick über die verwendeten ästhetischen Anpassungen sowie deren Einfluss zu erhalten.
 
-\subsection{\acrfull{HDR} und Tone Mapping}
+\subsection{High Dynamic Range und Tone Mapping}
 \acrfull{HDR} ermöglicht im Kontext digitaler Bilder eine feinere Darstellung des Helligkeitsspektrums. In herkömmlichen Bildformaten sind Farben nur innerhalb eines begrenzten Intensitätsbereichs unterscheidbar. Helle Bildbereiche werden weiss dargestellt, während dunkle Bereiche schwarz erscheinen. Dieser darstellbare Intensitätsbereich wird als Dynamic Range bezeichnet. Da HDR diesen Bereich deutlich erweitert und in feineren Abstufungen abbildet, können Helligkeitsunterschiede präziser dargestellt werden \parencite{hdr_2022}. Abbildung \ref{fig_terrain_hdr_no_hdr} veranschaulicht die resultierenden Kontrastunterschiede.
 
 \begin{figure}[H]
@@ -319,7 +319,7 @@ Es kann es bei der Verwendung von Mipmaps dazu führen, dass Texturen, welche si
 \end{figure}
 
 \subsection{Procedural Sky}
-Das Three.js-Ökosystem stellt zahlreiche Module zur Verfügung, um realitätsnahe Visualisierungen zu erzeugen. Ein Beispiel hierfür ist das \textit{Procedural Sky Plugin}\footnote{\url{https://threejs.org/examples/?q=sky#webgpu_sky}}, mit dem sich ein Tag-Nacht-Zyklus simulieren lässt. Das Plugin bietet verschiedene Einstellungsmöglichkeiten, etwa zur Definition der Sonnenposition, wodurch das dargestellte Gebirge in eine realitätsnahe Lichtumgebung eingebettet werden kann. Abbildung \ref{fig_procedural_sky} veranschaulicht den Einfluss auf die Darstellung des Gebirges anhand unterschiedlicher Sonnenpositionen. 
+Das Three.js-Ökosystem stellt zahlreiche Module zur Verfügung, um realitätsnahe Visualisierungen zu erzeugen. Ein Beispiel hierfür ist das \textit{Procedural Sky Plugin}\footnote{\url{https://github.com/mrdoob/three.js/blob/dev/examples/webgpu_sky.html}}, mit dem sich ein Tag-Nacht-Zyklus simulieren lässt. Das Plugin bietet verschiedene Einstellungsmöglichkeiten, etwa zur Definition der Sonnenposition, wodurch das dargestellte Gebirge in eine realitätsnahe Lichtumgebung eingebettet werden kann. Abbildung \ref{fig_procedural_sky} veranschaulicht den Einfluss auf die Darstellung des Gebirges anhand unterschiedlicher Sonnenpositionen. 
 \begin{figure}[H]
     \caption{Gebirge mit Procedural Sky Plugin (Eigene Darstellung)}
     \includegraphics[width=1.0\linewidth]{content/00_assets/threejs_procedural_sky.png}
