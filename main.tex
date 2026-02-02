@@ -15,8 +15,9 @@
     
     \pagenumbering{Roman}
 
-    \input{content/01_vorspann/01.1_titelblatt}
-    \include{content/01_vorspann/01.2_abstract}
+    \input{content/01_vorspann/titelblatt}
+    \include{content/01_vorspann/abstract}
+    \include{content/01_vorspann/danksagung}
 
     \tableofcontents 
         
@@ -49,8 +50,8 @@
     
     \printbibliography[heading=bibintoc,title={Literaturverzeichnis}]
     \include{content/03_nachspann/hilfsmittelverzeichnis}
+    \include{content/03_nachspann/eiderklaerung}
     \appendix
     \include{content/03_nachspann/anhang}
-    \include{content/03_nachspann/eiderklaerung}
     
 \end{document}
