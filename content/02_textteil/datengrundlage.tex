@@ -1,9 +1,10 @@
 \chapter{Datengrundlage}
 \label{chap_datengrundlage}
-Als Datengrundlage dienen Gebirgsdaten des \acrfull{swisstopo}. Für die vorliegende Arbeit sind insbesondere zwei Datensätze relevant. Der Datensatz \textbf{swissALTI3D} stellt ein hochauflösendes digitales Höhenmodell ohne Bewuchs und Bebauung bereit und wird in einem Turnus von sechs Jahren aktualisiert \parencite{swissALTI3D_2024}. Ergänzend dazu enthält der Datensatz \textbf{swissIMAGE} orthografisch korrigierte Luftbilder der Schweizer Gebirgslandschaften, die in einem Drei-Jahres-Zyklus erneuert werden  \parencite{swissIMAGE_2024}. Durch die Kombination dieser beiden Datensätze lassen sich Gebirgslandschaften dreidimensional rekonstruieren. Beide Datensätze stehen kostenlos über die offizielle Webseite von swisstopo\footnote{\url{https://www.swisstopo.admin.ch}} zum Download zur Verfügung.
 
-\section{swissALTI3D Datensatz}
-Der Datensatz swissALTI3D enthält Höhendaten der Gebirgslandschaften sowohl der Schweiz als auch des Fürstentums Liechtenstein (siehe Abbildung \ref{fig_swissALTI3D}). Abhängig von der jeweiligen Geländehöhe kommen unterschiedliche Messtechniken zum Einsatz. Gebiete unterhalb von 2000m ü. M. werden mithilfe von Lasermessverfahren wie \acrfull{LiDAR} erfasst, die eine Genauigkeit von bis zu \pm30cm ermöglichen. In Höhenlagen oberhalb von 2000m ü. M. wird hingegen die Stereokorrelation eingesetzt, bei der eine Messgenauigkeit im Bereich von \pm1m bis \pm3m erreicht wird \parencite[S. 8]{swissALTI3D_info_2024}.
+Als Datengrundlage dienen Gebirgsdaten des \acrfull{swisstopo}. Für die vorliegende Arbeit sind insbesondere zwei Datensätze relevant. Der Datensatz \\\textbf{\swissALTI{}} stellt ein hochauflösendes digitales Höhenmodell ohne Bewuchs und Bebauung bereit und wird in einem Turnus von sechs Jahren aktualisiert \parencite{swissALTI3D_2024}. Ergänzend dazu enthält der Datensatz \textbf{swissIMAGE} orthografisch korrigierte Luftbilder der Schweizer Gebirgslandschaften, die in einem Drei-Jahres-Zyklus erneuert werden  \parencite{swissIMAGE_2024}. Durch die Kombination dieser Datensätze lassen sich die Gebirgslandschaften in 3D rekonstruieren. Beide Datensätze stehen kostenlos über die offizielle Webseite von swisstopo\footnote{\url{https://www.swisstopo.admin.ch}} zum Download zur Verfügung.
+
+\section{swissALTI3D-Datensatz}
+Der Datensatz swissALTI3D enthält \textbf{Höhendaten der Gebirgslandschaften} sowohl der Schweiz als auch des Fürstentums Liechtenstein (siehe Abbildung \ref{fig_swissALTI3D}). Abhängig von der jeweiligen Geländehöhe kommen unterschiedliche Messtechniken zum Einsatz. Gebiete unterhalb von 2000 m ü. M. werden mithilfe von Lasermessverfahren wie \acrfull{LiDAR} erfasst, die eine Genauigkeit von bis zu \pm30cm ermöglichen. In Höhenlagen oberhalb von 2000 m ü. M. wird hingegen die Stereokorrelation eingesetzt, bei der eine Messgenauigkeit im Bereich von \pm1m bis \pm3m erreicht wird \parencite[S. 8]{swissALTI3D_info_2024}.
 
 \begin{figure}[H]
     \caption{Höhendatenabdeckung von swissALTI3D \parencite[S. 4]{swissALTI3D_info_2024}}
@@ -11,12 +12,12 @@ Der Datensatz swissALTI3D enthält Höhendaten der Gebirgslandschaften sowohl de
     \label{fig_swissALTI3D}
 \end{figure}
 
-Die Höhendaten werden in Form von Quadratkilometer-Kacheln bereitgestellt und stehen in zwei unterschiedlichen Datenformaten zur Verfügung. Das \textbf{\acrfull{COG}-Format} enthält neben den eigentlichen Höhenwerten auch Informationen zur Georeferenzierung. Dabei repräsentieren die einzelnen Pixel der Bilddatei jeweils einen Höhenwert, der mit einer 32-Bit-Auflösung gespeichert ist. Im Gegensatz dazu werden die Höhenwerte im \textbf{ASCII-Format} nicht als Bild, sondern als Textdatei in Form numerischer Werte abgelegt. Für jeden einzelnen Wert wird hierbei eine Genauigkeit von vier Nachkommastellen garantiert \parencite[S. 4-5]{swissALTI3D_info_2024}.
+Die Höhendaten werden in Form von Quadratkilometer-Kacheln bereitgestellt und stehen in zwei unterschiedlichen Datenformaten zur Verfügung. Das \textbf{\acrfull{COG}-Format} enthält neben den eigentlichen Höhenwerten auch Informationen zur Georeferenzierung. Dabei repräsentieren die einzelnen Pixel der Bilddatei jeweils einen Höhenwert. Im Gegensatz dazu werden die Höhenwerte im \textbf{ASCII-Format} nicht als Bild, sondern als Textdatei in Form numerischer Werte abgelegt. Für jeden einzelnen Wert wird hierbei eine Genauigkeit von vier Nachkommastellen garantiert \parencite[S. 4-5]{swissALTI3D_info_2024}.
 
-Der Datensatz ist in zwei unterschiedlichen Bodenauflösungen verfügbar: 50cm pro Pixel sowie 2m pro Pixel. Tabelle \ref{table:datenverbrauch_swissALTI3D} gibt einen Überblick über den benötigten Speicherplatz für den gesamten Datensatz, aufgeschlüsselt nach Auflösung und Datenformat. Eine vollständige Aktualisierung des Datensatzes erfolgt im Abstand von sechs Jahren. Entsprechend wird jährlich rund ein Sechstel des Gesamtdatensatzes neu erfasst \parencite[S. 6]{swissALTI3D_info_2024}.
+Der Datensatz ist in zwei unterschiedlichen Bodenauflösungen verfügbar: 50 cm pro Pixel sowie 2 m pro Pixel. Tabelle \ref{table:datenverbrauch_swissALTI3D} gibt einen Überblick über den benötigten Speicherplatz für den gesamten Datensatz, aufgeschlüsselt nach Auflösung und Datenformat. Eine vollständige Aktualisierung des Datensatzes erfolgt im Abstand von sechs Jahren. Entsprechend wird jährlich rund ein Sechstel des Gesamtdatensatzes neu erfasst \parencite[S. 6]{swissALTI3D_info_2024}.
 
 \begin{table}[H]
-    \caption{Speicherbedarf swissALTI3D Datensatzes aufgeschlüsselt nach Auflösung und Datenformat \parencite[S. 6]{swissALTI3D_info_2024}}
+    \caption{Speicherbedarf des swissALTI3D-Datensatzes aufgeschlüsselt nach Auflösung und Datenformat \parencite[S. 6]{swissALTI3D_info_2024}}
     \begin{tabularx}{\textwidth} {
         >{\raggedright\arraybackslash}X 
         >{\raggedright\arraybackslash}X
@@ -24,35 +25,35 @@ Der Datensatz ist in zwei unterschiedlichen Bodenauflösungen verfügbar: 50cm p
             \hline
             \textbf{Auflösung} & \textbf{GeoTIFF} & \textbf{ASCII XYZ}  \\
             \hline
-            50cm     & 800 GB & 5 TB     \\
-            2m       & 50.5 GB & 308 GB     \\
+            50 cm     & 800 GB & 5 TB     \\
+            2 m       & 50.5 GB & 308 GB     \\
             \hline
     \end{tabularx}
     \bigbreak
     \label{table:datenverbrauch_swissALTI3D}
 \end{table}
 
-\section{swissIMAGE Datensatz}
-Der swissIMAGE Datensatz beinhaltet orthografische Luftbilder. Die Daten liegen in drei unterschiedlichen Auflösungsstufen vor. Je nach Erfassungszeitraum ist eine Auflösung von bis zu 10 Zentimeter pro Pixel möglich (siehe Tabelle \ref{table:aufloesung_swissIMAGE}) 
+\section{swissIMAGE-Datensatz}
+Der swissIMAGE-Datensatz beinhaltet \textbf{orthografische Luftbilder}. Die Daten liegen in drei unterschiedlichen Auflösungsstufen vor. Je nach Erfassungszeitraum ist eine Auflösung von bis zu 10 Zentimeter pro Pixel möglich (siehe Tabelle \ref{table:aufloesung_swissIMAGE}) 
 
 \begin{table}[H]
-    \caption{Maximale Bodenauflösung des swissIMAGE Datensatzes aufgeschlüsselt nach Jahr der Aufnahme \parencite[S. 3]{swissIMAGE_info_2024}}
+    \caption{Maximale Bodenauflösung des swissIMAGE-Datensatzes aufgeschlüsselt nach Jahr der Aufnahme \parencite[S. 3]{swissIMAGE_info_2024}}
     \begin{tabularx}{\textwidth} {
         >{\raggedright\arraybackslash}X 
         >{\raggedright\arraybackslash}X}
             \hline
             \textbf{Erfassungszeitraum} & \textbf{Maximale Bodenauflösung pro Pixel}  \\
             \hline
-            1998 bis 2005 & 50cm \\
-            2005 bis 2016 & 25cm \\
-            Ab 2017 & 10cm \\
+            1998 bis 2005 & 50 cm \\
+            2005 bis 2016 & 25 cm \\
+            Ab 2017 & 10 cm \\
             \hline
     \end{tabularx}
     \bigbreak
     \label{table:aufloesung_swissIMAGE}
 \end{table}
 
-Um eine einheitliche Datengrundlage sicherzustellen, werden auch die swissIMAGE-Daten von swisstopo in Form einzelner Quadratkilometer-Kacheln bereitgestellt. Beide Datensätze sind dabei auf das LV95-Koordinatensystem der Schweiz referenziert (siehe Abbildung \ref{fig_dataset_lv95}). Der Speicherbedarf einer Kachel ist abhängig von der gewählten Auflösung. Während Kacheln mit einer Auflösung von 2m pro Pixel etwa 0.2MB Speicher benötigen, steigt der Speicherbedarf bei der höchsten Auflösung von 10 cm pro Pixel auf rund 60MB an. Der swissIMAGE-Datensatz wird in einem Dreijahreszyklus aktualisiert \parencite[S. 8 + S. 9]{swissIMAGE_info_2024}.
+Um eine einheitliche Datengrundlage sicherzustellen, werden die swissIMAGE-Daten von swisstopo ebenfalls in Form einzelner Quadratkilometer-Kacheln bereitgestellt. Beide Datensätze sind dabei auf das LV95-Koordinatensystem der Schweiz referenziert (siehe Abbildung \ref{fig_dataset_lv95}). Der Speicherbedarf einer Kachel ist abhängig von der gewählten Auflösung. Während Kacheln mit einer Auflösung von 2 m pro Pixel etwa 0.2 MB Speicher benötigen, steigt der Speicherbedarf bei der höchsten Auflösung von 10 cm pro Pixel auf rund 60 MB an. Der swissIMAGE-Datensatz wird in einem Dreijahreszyklus aktualisiert \parencite[S. 8 + S. 9]{swissIMAGE_info_2024}.
 
 \begin{figure}[H]
     \caption{Ausrichtung der Datensätze am LV95-Koordinatensystem \parencite[S. 4]{swissIMAGE_info_2024}}
@@ -60,8 +61,8 @@ Um eine einheitliche Datengrundlage sicherzustellen, werden auch die swissIMAGE-
     \label{fig_dataset_lv95}
 \end{figure}
 
-\section{LV95 (EPSG 2056) Koordinatensystem}
-Beide zuvor beschriebenen Datensätze basieren auf dem Schweizer Landeskoordinatensystem, das unter den Bezeichnungen LV95 beziehungsweise EPSG 2056 bekannt ist. Die Bezeichnung LV95 verweist auf den Zeitpunkt der Landesvermessung im Jahr 1995. Das Koordinatensystem verwendet eine Nord- (N) sowie eine Ostachse (E) (siehe Abbildung \ref{fig_lv95}). Der Ursprung des Koordinatensystems liegt bei der ehemaligen Sternwarte in Bern und besitzt die Koordinaten N = 1’200’000m und E = 2’600’000m. Dieser Ursprung wurde bewusst nicht bei N = 0 m / E = 0 m festgelegt, um negative Koordinaten südlich und westlich von Bern zu vermeiden und eine eindeutige Unterscheidung zwischen Nord- und Ostwerten zu gewährleisten. Zur Abgrenzung gegenüber dem früheren Koordinatensystem LV03 werden der Nordkoordinate 1’000’000m und der Ostkoordinate 2’000’000m hinzuaddiert. Ein positiver Nebeneffekt dieser Verschiebung besteht darin, dass jeder Punkt innerhalb der Schweiz eindeutig durch zwei siebenstellige Koordinaten beschrieben werden kann \parencite{swisstopo_lv95_2025}.
+\section{LV95 (EPSG2056) Koordinatensystem}
+Beide zuvor beschriebenen Datensätze basieren auf dem \textbf{Schweizer Landeskoordinatensystem}, das unter den Bezeichnungen LV95 beziehungsweise EPSG2056 bekannt ist. Die Bezeichnung LV95 verweist auf den Zeitpunkt der Landesvermessung im Jahr 1995. Das Koordinatensystem verwendet eine Nord- (N) sowie eine Ostachse (E) (siehe Abbildung \ref{fig_lv95}). Der Ursprung des Koordinatensystems liegt bei der ehemaligen Sternwarte in Bern und besitzt die Koordinaten N = 1’200’000 m und E = 2’600’000 m. Dieser Ursprung wurde bewusst nicht bei N = 0 m / E = 0 m festgelegt, um negative Koordinaten südlich und westlich von Bern zu vermeiden und eine eindeutige Unterscheidung zwischen Nord- und Ostwerten zu gewährleisten. Zur Abgrenzung gegenüber dem früheren Koordinatensystem LV03 werden der Nordkoordinate 1’000’000 m und der Ostkoordinate 2’000’000 m hinzuaddiert. Ein positiver Nebeneffekt dieser Verschiebung besteht darin, dass jeder Punkt innerhalb der Schweiz eindeutig durch zwei siebenstellige Koordinaten beschrieben werden kann \parencite{swisstopo_lv95_2025}.
 
 \begin{figure}[H]
     \caption{LV95-Koordinatensystem \parencite{swisstopo_lv95_2025}}

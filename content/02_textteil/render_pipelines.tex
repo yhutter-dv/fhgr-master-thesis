@@ -1,56 +1,56 @@
 \chapter{Render Pipeline}
 \label{chap_render_pipelines}
-Für die Entwicklung einer effizienten und echtzeitfähigen 3D-Visualisierung ist ein grundlegendes technisches Verständnis der Funktionsweise von Grafikschnittstellen erforderlich. Dieses Kapitel vermittelt einen Überblick über die dafür relevanten Terminologien und Konzepte. Ähnlich zur Data Visualization Pipeline, die die einzelnen Schritte von der Datenvorverarbeitung bis zur finalen Darstellung beschreibt, veranschaulicht die Render Pipeline die Prozesse, die innerhalb der Grafikkarte ablaufen, bis eine 3D-Visualisierung erzeugt wird. Im Folgenden werden die wichtigsten Schritte dieser Pipeline erläutert und zentrale Konzepte wie Shader, thematisiert.
+Für die Entwicklung einer effizienten und echtzeitfähigen 3D-Visualisierung ist ein grundlegendes Verständnis der Funktionsweise von Grafikschnittstellen notwendig. Dieses Kapitel vermittelt einen Überblick über die dafür relevanten Terminologien und Konzepte. Ähnlich zur Data Visualization Pipeline, welche die einzelnen Schritte von der Datenvorverarbeitung bis zur finalen Darstellung beschreibt, veranschaulicht die Render Pipeline die Prozesse, die innerhalb der Grafikkarte ablaufen, bis eine 3D-Visualisierung erzeugt wird. Im Folgenden werden die wichtigsten Schritte dieser Pipeline erläutert und zentrale Konzepte wie Shader, thematisiert.
 
 \section{Aufbau einer Render Pipeline}
-Der konkrete Aufbau einer Render Pipeline ist abhängig von der jeweils verwendeten Grafikschnittstelle, etwa DirectX, OpenGL/Vulkan oder Metal. In vielen Fällen unterscheiden sich diese Pipelines jedoch hauptsächlich in der verwendeten Terminologie, während die zugrunde liegenden Schritte und Konzepte weitgehend übereinstimmen. Zur Veranschaulichung der einzelnen Prozessschritte dient die in Abbildung \ref{fig_render_pipeline} dargestellte Render Pipeline als Referenz.
+Der konkrete Aufbau einer Render Pipeline ist von der jeweils verwendeten Grafikschnittstelle, etwa DirectX, OpenGL/Vulkan oder Metal abhängig. In vielen Fällen unterscheiden sich diese Pipelines jedoch hauptsächlich in der verwendeten Terminologie, während die zugrunde liegenden Schritte und Konzepte weitgehend übereinstimmen. Zur Veranschaulichung der einzelnen Prozessschritte dient die in Abbildung \ref{fig_render_pipeline} dargestellte Render Pipeline als Referenz.
 
 \begin{figure}[H]
-    \caption{Aufbau einer Render Pipeline\parencite{render_pipeline_2023}}
+    \caption{Aufbau einer Render Pipeline \parencite{render_pipeline_2023}}
     \includegraphics[width=.4\linewidth]{content/00_assets/render_pipeline.png}
     \label{fig_render_pipeline}
 \end{figure}
 
-3D-Objekte werden von Grafikkarten grundsätzlich aus Dreiecken aufgebaut. Diese Dreiecke bestehen aus einzelnen Punkten, den sogenannten ``Vertices''. Die Grafikkarte verarbeitet somit Vertices, setzt diese zu Dreiecken zusammen und erzeugt daraus schrittweise eine vollständige 3D-Visualisierung. Dabei durchläuft die Verarbeitung mehrere fest definierte Prozessschritte innerhalb der Render Pipeline. Einige dieser Schritte lassen sich durch sogenannte Shader beeinflussen, während andere fest vorgegeben sind. Zu Beginn erhält die Pipeline die Vertices als Eingabe. In der ``Vertex-Shader-Stage'' wird deren Position berechnet und transformiert. Anschliessend werden die Vertices in der ``Primitive-Assembly-Stage'' zu Dreiecken zusammengesetzt. Damit diese Dreiecke auf dem Bildschirm dargestellt werden können, werden sie in der ``Rasterization-Stage'' in einzelne Bildpunkte (Pixel) umgewandelt. Die endgültige Farbe jedes Pixels wird dabei im Fragment Shader bestimmt. Abschliessend werden die berechneten Pixel in den sogenannten ``Frame Buffer'' geschrieben und auf dem Bildschirm ausgegeben.
+3D-Objekte werden von Grafikkarten aus \textbf{Dreiecken} aufgebaut. Diese bestehen wiederum aus einzelnen Punkten, den sogenannten \textbf{``Vertices''}. Die Grafikkarte verarbeitet somit Vertices, setzt diese zu Dreiecken zusammen und erzeugt daraus schrittweise eine vollständige 3D-Visualisierung. Hierfür werden mehrere Prozessschritte durchgeführt. Einige dieser Schritte lassen sich durch sogenannte ``Shader'' beeinflussen. Zu Beginn erhält die Pipeline die Vertices als Datengrundlage. In der \textbf{``Vertex-Shader-Stage''} wird deren Position berechnet und transformiert. Anschliessend werden diese in der \textbf{``Primitive-Assembly-Stage''} zu Dreiecken zusammengesetzt. Damit die Dreiecke auf dem Bildschirm dargestellt werden können, werden sie in der \textbf{``Rasterization-Stage''} in einzelne Bildpunkte (Pixel) umgewandelt. Die endgültige Farbe jedes Pixels wird dabei im Fragment Shader bestimmt. Abschliessend werden die berechneten Pixel in den sogenannten ``Frame Buffer'' geschrieben und auf dem Bildschirm dargestellt.
 
 \section{Shader}
-Shader sind spezielle Programme, die direkt auf der Grafikkarte (GPU) ausgeführt werden. Im Gegensatz zur CPU, die Programme typischerweise sequenziell abarbeitet, verarbeitet die GPU diese parallel. Dieses Prinzip ist zentral für das Verständnis von Shadern: Obwohl der Shadercode auf den ersten Blick sequenziell erscheint, wird er gleichzeitig für jeden Vertex und Pixel ausgeführt. Shader werden in dedizierten Programmiersprachen geschrieben, die von der jeweiligen Grafikschnittstelle abhängen. Ihre grundlegende Aufgabe besteht darin, einen Eingabewert – etwa einen Vertex oder ein Pixel - zu verarbeiten und daraus einen Ausgabewert wie eine Position oder Farbe zu berechnen. Im Folgenden werden die wichtigsten Terminologien und Konzepte im Zusammenhang mit Shadern näher erläutert.
+Shader sind spezielle Programme, die auf der Grafikkarte (GPU) ausgeführt werden. Im Gegensatz zur CPU, die Programme typischerweise sequenziell abarbeitet, verarbeitet die GPU diese parallel. Dieses Prinzip ist zentral für das Verständnis von Shadern: Obwohl der Shadercode auf den ersten Blick sequenziell erscheint, wird er gleichzeitig für jeden Vertex und Pixel ausgeführt. Shader werden in dedizierten Programmiersprachen, abhängig von der jeweiligen Grafikschnittstelle, geschrieben. Ihre grundlegende Aufgabe besteht darin, einen Eingabewert (etwa einen Vertex oder ein Pixel) zu verarbeiten und daraus einen Ausgabewert wie eine Position oder Farbe zu berechnen. Nachfolgend werden die wichtigsten Terminologien und Konzepte in Bezug auf Shader näher erläutert.
 
-\subsection{Vertex Shader}
-Der Vertex Shader ist dafür verantwortlich, die Position einzelner Vertices zu berechnen und zu verändern. So kann er beispielsweise genutzt werden, um Punkte abhängig von den gemessenen Höhenwerten des swissALTI3D-Datensatzes (siehe Kapitel \ref{chap_datengrundlage}) zu verschieben und auf diese Weise die Geometrie eines Gebirges im dreidimensionalen Raum zu rekonstruieren.
+\subsection{Vertex-Shader}
+Der Vertex-Shader ist dafür verantwortlich, die \textbf{Position einzelner Vertices zu bestimmen}. Er kann beispielsweise genutzt werden, um Punkte abhängig von den gemessenen Höhenwerten des swissALTI3D-Datensatzes (siehe Kapitel \ref{chap_datengrundlage}) zu verschieben. Auf diese Weise lässt sich die Geometrie eines Gebirges in 3D rekonstruieren.
 
-\subsection{Fragment Shader}
-Der Fragment Shader bestimmt die Farbe einzelner Bildpunkte (Pixel). Dabei muss der Farbwert nicht zwingend wie in Abbildung \ref{fig_fragment_shader} dargestellt, fest vorgegeben sein, sondern kann auch aus einer Bilddatei gelesen werden. In Kombination mit dem swissIMAGE-Datensatz lassen sich auf diese Weise die orthografischen Luftbilder auf die 3D-Geometrie des Gebirges projizieren.
+\subsection{Fragment-Shader}
+Der Fragment-Shader bestimmt die \textbf{Farbe einzelner Bildpunkte} (Pixel). Dabei muss der Farbwert nicht zwingend wie in Abbildung \ref{fig_fragment_shader} dargestellt, fest vorgegeben sein, sondern kann auch aus einer Bilddatei gelesen werden. In Kombination mit dem swissIMAGE-Datensatz lassen sich auf diese Weise die orthografischen Luftbilder auf die 3D-Geometrie des Gebirges projizieren.
 
 \begin{figure}[H]
-    \caption{Beispiel Fragment Shader \parencite{book_of_shaders_fragment_shader_2025}}
+    \caption{Beispiel Fragment-Shader \parencite{book_of_shaders_fragment_shader_2025}}
     \includegraphics[width=.5\linewidth]{content/00_assets/beispiel_shader.png}
     \label{fig_fragment_shader}
 \end{figure}
 
-\subsection{Compute Shader}
+\subsection{Compute-Shader}
 \label{chap_compute_shader}
-Im Gegensatz zu Vertex- und Fragment-Shadern, die fest in die Render Pipeline eingebunden sind und jeweils spezifische Aspekte wie Position oder Farbe beeinflussen, können Compute Shader für allgemeine Rechenaufgaben eingesetzt werden. Auf diese Weise lassen sich Berechnungen, die sonst typischerweise auf der CPU ausgeführt würden, auf die Grafikkarte auslagern und dort parallel verarbeiten, was zu einer deutlichen Leistungssteigerung führen kann. Ein Anwendungsbeispiel ist die hydraulische Erosionssimulation. Diese modelliert, wie Wasser die Beschaffenheit des Gebirges über die Zeit verändert. Solche Simulationen können mithilfe von Compute Shadern in Echtzeit auf der GPU ausgeführt werden (siehe Abbildung \ref{fig_compute_shader}).
+Anders als der Vertex- und Fragment-Shader, die fest in die Render Pipeline eingebunden sind und jeweils spezifische Aspekte wie Position oder Farbe beeinflussen, können Compute-Shader für allgemeine Rechenaufgaben eingesetzt werden. Auf diese Weise lassen sich Berechnungen auf die Grafikkarte auslagern und dort parallel verarbeiten. Ein Anwendungsbeispiel hierfür ist eine hydraulische Erosionssimulation. Sie modelliert, wie Wasser die Oberflächenstruktur eines Gebirges im Verlauf der Zeit verändert. Solche Simulationen lassen sich mithilfe von Compute-Shader in Echtzeit auf der GPU ausführen (siehe Abbildung \ref{fig_compute_shader}).
 
 \begin{figure}[H]
-    \caption{Hydraulische Erosionssimulation basierend auf Compute Shader \parencite{compute_shader_hydraulic_erosion_2025}}
+    \caption{Hydraulische Erosionssimulation basierend auf Compute-Shader \parencite{compute_shader_hydraulic_erosion_2025}}
     \includegraphics[width=.3\linewidth]{content/00_assets/computer_shader_errosion_simulation.png}
     \label{fig_compute_shader}
 \end{figure}
 
 
 \subsection{Attributes und Uniforms}
-Shaderprogramme werden, wie bereits beschrieben, parallel für jeden Eingabewert – also für jeden Vertex oder jedes Pixel – ausgeführt. In diesem Zusammenhang spielen die Konzepte der ``Attributes'' und ``Uniforms'' eine zentrale Rolle. \textbf{Uniforms} sind Variablen, deren Wert für alle Shader-Instanzen identisch ist, etwa die aktuelle Kameraposition. \textbf{Attributes} hingegen enthalten Daten, die sich für jeden Eingabewert unterscheiden können, beispielsweise die Position eines Vertex.
+Shaderprogramme werden, wie bereits beschrieben, parallel für jeden Eingabewert ausgeführt. In diesem Zusammenhang spielen die Konzepte der ``Attributes'' und ``Uniforms'' eine zentrale Rolle. \textbf{Uniforms} sind Variablen, deren Wert für alle Shader-Instanzen identisch ist, etwa die aktuelle Kameraposition. \textbf{Attributes} hingegen enthalten Daten, die sich für jeden Eingabewert unterscheiden können, beispielsweise die Position eines Vertex.
 
 \section{Texturen}
-3D-Modelle bestehen neben der eigentlichen Geometrie, die die räumliche Struktur definiert, auch aus Texturen. Texturen sind Bilddateien, die auf die Geometrie projiziert werden und deren visuelles Erscheinungsbild bestimmen (siehe Abbildung \ref{fig_texturen}).
+3D-Modelle bestehen nebst der eigentlichen Geometrie, die die räumliche Struktur definiert, auch aus Texturen. Texturen sind Bilddateien, die auf die Geometrie projiziert werden und deren \textbf{visuelles Erscheinungsbild} bestimmen (siehe Abbildung \ref{fig_texturen}).
 
 \begin{figure}[H]
     \caption{Projizierung von Texturen auf Geometrie \parencite{learnopengl_pbr_2016}}
     \includegraphics[width=.2\linewidth]{content/00_assets/texturen.png}
     \label{fig_texturen}
 \end{figure}
-Texturen müssen dabei nicht ausschliesslich Farbwerte enthalten, sondern können auch zusätzliche Informationen wie Höhenwerte in Form von Heightmaps oder Normalvektoren als Normalmaps speichern. Diese Daten können anschliessend von Shadern ausgelesen und genutzt werden, um eine detaillierte und realitätsnahe 3D-Visualisierung zu erzeugen (siehe Abbildung \ref{fig_texturen_kombiniert}).
+Texturen müssen nicht ausschliesslich Farbwerte enthalten, sondern können auch zusätzliche Informationen wie Höhenwerte in Form von Heightmaps oder Normalvektoren als Normalmaps speichern. Diese Daten können anschliessend von Shadern ausgelesen und genutzt werden, um eine detaillierte und realitätsnahe 3D-Visualisierung zu erzeugen (siehe Abbildung \ref{fig_texturen_kombiniert}).
 
 \begin{figure}[H]
     \caption{Kombination von verschiedenen Texturen \parencite{learnopengl_pbr_2016}}

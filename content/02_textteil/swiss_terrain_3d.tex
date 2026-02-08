@@ -1,14 +1,14 @@
 \chapter{Swiss Terrain 3D}
 \label{chap_swiss_terrain_3d}
-Kapitel \ref{chap_datengrundlage} behandelte die Datengrundlage für die Terrainvisualisierung. In Kapitel \ref{chap_technologien} wurden Programme und Frameworks zur Erstellung von 3D-Visualisierungen thematisiert. Die technisch notwendigen Grundlagen zur Grafikprogrammierung wurden im Rahmen von Kapitel \ref{chap_render_pipelines} erläutert. Kapitel \ref{chap_algorithmen} befasste sich mit gängigen Datenstrukturen und Algorithmen. Aufbauend auf diesem Vorwissen geht es in diesem Kapitel nun um die eigentliche Implementierung der Terrainvisualisierung.
+Im Fokus von Kapitel \ref{chap_datengrundlage} stand die Datengrundlage für die Terrainvisualisierung. In Kapitel \ref{chap_technologien} wurden Programme und Frameworks zur Erstellung von 3D-Visualisierungen thematisiert. Die technisch notwendigen Grundlagen zur Grafikprogrammierung wurden im Rahmen von Kapitel \ref{chap_render_pipelines} erläutert. Kapitel \ref{chap_algorithmen} befasste sich mit gängigen Datenstrukturen und Algorithmen. Aufbauend auf diesem Vorwissen geht es in diesem Kapitel nun um die eigentliche Implementierung der Terrainvisualisierung.
 
 \section{Technologie und Anforderungen}
 \label{technologie_anforderungen}
-Bevor mit der Implementierung einer Visualisierung begonnen werden kann, müssen sowohl die Anforderungen als auch die eingesetzte Technologie definiert werden. Eine echtzeitfähige 3D-Visualisierung ist vereinfacht ausgedrückt eine fortlaufende Abfolge von Bildern, die von der Grafikkarte erzeugt werden. Die Bildgenerierung erfolgt dabei unter Berücksichtigung von Parametern wie Kameraperspektive, Datenbasis und Interaktion. Damit eine Visualisierung als echtzeitfähig gilt, wird in der Regel eine Bildrate von mindestens 30 Bildern pro Sekunde (FPS) vorausgesetzt. Moderne Monitore unterstützen jedoch deutlich höhere Bildfrequenzen, sodass Darstellungsraten von 60 bis 140 FPS inzwischen weit verbreitet sind. Neben der Bildrate spielt auch die Auflösung eine entscheidende Rolle. Je höher die Auflösung, desto detailgetreuer lässt sich die Visualisierung darstellen. Sowohl eine hohe Auflösung als auch eine hohe Bildrate erfordern eine entsprechend leistungsfähige Grafikkarte, was den Kreis der potenziellen Zielgruppe einschränken kann. Um einen ausgewogenen Kompromiss zwischen visueller Qualität und breiter Nutzbarkeit zu erreichen, legt diese Masterarbeit daher folgende Mindestanforderung an die Visualisierung fest:\textit{Die Visualisierung soll mit mindestens 60 Bildern pro Sekunde bei einer Auflösung von 2k laufen}.
+Bevor mit der Implementierung einer Visualisierung begonnen werden kann, müssen sowohl die Anforderungen als auch die eingesetzte Technologie definiert werden. Eine echtzeitfähige 3D-Visualisierung ist vereinfacht ausgedrückt eine fortlaufende Abfolge von Bildern, die von der Grafikkarte erzeugt werden. Die Bildgenerierung erfolgt dabei unter Berücksichtigung von Parametern wie Kameraperspektive, Datenbasis und Interaktion. Damit eine Visualisierung als echtzeitfähig bezeichnet werden kann, wird in der Regel eine Bildrate von mindestens 30 Bildern pro Sekunde (FPS) vorausgesetzt. Moderne Monitore unterstützen jedoch deutlich höhere Bildfrequenzen, sodass Darstellungsraten von 60 bis 140 FPS inzwischen weit verbreitet sind. Neben der Bildrate spielt auch die Auflösung eine entscheidende Rolle. Je höher die Auflösung, desto detailgetreuer lässt sich die Visualisierung darstellen. Sowohl eine hohe Auflösung als auch eine hohe Bildrate erfordern eine entsprechend leistungsfähige Grafikkarte. Dies schränkt wiederum den Kreis der potenziellen Zielgruppe ein. Um einen ausgewogenen Kompromiss zwischen visueller Qualität und breiter Nutzbarkeit zu erreichen, legt diese Masterarbeit daher folgende Mindestanforderung an die Visualisierung fest: \textit{Die Visualisierung soll mit mindestens 60 Bildern pro Sekunde bei einer Auflösung von 2k genutzt werden können}.
 
-Neben den technischen Anforderungen stellt sich auch die Frage, welche Plattformen unterstützt werden sollen. Auf den meisten Betriebssystemen sowie mobilen Endgeräten sind bereits Webbrowser vorinstalliert. Browserbasierte Anwendungen bieten zudem den Vorteil, dass kein zusätzlicher Installationsaufwand erforderlich ist. Um eine möglichst breite Zielgruppe ohne zusätzliche Hürden zu erreichen, wurde daher eine webbasierte Implementierung gewählt.
+Neben den technischen Anforderungen stellt sich auch die Frage, welche Plattformen unterstützt werden sollen. Auf den meisten Betriebssystemen sowie mobilen Endgeräten sind bereits Webbrowser vorinstalliert. Browserbasierte Anwendungen bieten ausserdem den Vorteil, dass kein zusätzlicher Installationsaufwand erforderlich ist. Um eine möglichst breite Zielgruppe ohne zusätzliche Hürden zu erreichen, wurde daher eine webbasierte Implementierung gewählt.
 
-Wie in Kapitel \ref{chap_technologien} thematisiert, unterstützen moderne Engines wie Unity, Unreal und Godot grundsätzlich auch die Entwicklung browserbasierter Anwendungen. Die primäre Zielplattform dieser Engines sind jedoch nach wie vor native Anwendungen für Desktop- und mobile Endgeräte. Zudem fallen bei kommerziellen Lösungen wie Unity und Unreal entsprechende Lizenzgebühren an. Obwohl Spiele-Engines eine Vielzahl an Werkzeugen bereitstellen, die die Entwicklung von 3D-Anwendungen erleichtern, setzt deren effektive Nutzung eine umfangreiche Einarbeitung voraus. Ebenso sind Engines bei auftretenden technischen Limitationen nur eingeschränkt anpassbar, da der Zugriff auf den Quellcode – insbesondere bei proprietären Lösungen – begrenzt ist. Zusätzlich erfordern Engines wie Unreal eine vergleichsweise leistungsfähige Hardware, um sinnvoll eingesetzt werden zu können. Vor diesem Hintergrund wurde für diese Arbeit ein webbasiertes Framework anstelle einer Spiele-Engine gewählt. Sowohl Three.js als auch Babylon.js unterstützen moderne Grafikschnittstellen wie WebGL2 und WebGPU. Da das CAVE-System der FHGR auf Three.js basiert, fiel die Entscheidung zugunsten von Three.js. Zusätzlich profitiert Three.js von einer grösseren Community sowie einer Vielzahl an frei verfügbaren Beispielanwendungen (siehe Kapitel \ref{chap_technologien}).
+Wie in Kapitel \ref{chap_technologien} thematisiert, unterstützen moderne Engines wie Unity, Unreal und Godot die Entwicklung browserbasierter Anwendungen. Die primäre Zielplattform dieser Engines sind jedoch native Anwendungen für Desktop- und mobile Endgeräte. Zudem fallen bei kommerziellen Lösungen wie Unity und Unreal entsprechende Lizenzgebühren an. Obwohl Spiele-Engines eine Vielzahl an Werkzeugen bereitstellen, welche die Entwicklung von 3D-Anwendungen erleichtern, setzt deren effektive Nutzung eine umfangreiche Einarbeitung voraus. Ebenso sind Engines bei auftretenden technischen Limitationen nur eingeschränkt anpassbar, da der Zugriff auf den Quellcode (insbesondere bei proprietären Lösungen) begrenzt ist. Zudem setzen Engines wie Unreal eine entsprechend leistungsfähige Hardware voraus. Vor diesem Hintergrund wurde für diese Arbeit ein webbasiertes Framework anstelle einer Spiele-Engine gewählt. Sowohl Three.js als auch Babylon.js unterstützen moderne Grafikschnittstellen wie WebGL2 und WebGPU. Da das CAVE-System der FHGR auf Three.js basiert, fiel die Entscheidung zugunsten von Three.js. Zusätzlich profitiert Three.js von einer grösseren Community sowie einer Vielzahl an frei verfügbaren Beispielanwendungen (siehe Kapitel \ref{chap_technologien}).
 
 \section{Datenvorverarbeitung}
 Um eine manuelle Datenvorverarbeitung zu vermeiden, wurden die nachfolgend beschriebenen Schritte weitgehend mithilfe eines Python-Skripts automatisiert. Dadurch entfällt eine manuelle Durchführung der einzelnen Verarbeitungsschritte. Abbildung \ref{fig_data_preprocessing} bietet einen Überblick über den gesamten Datenvorverarbeitungsprozess. Im Folgenden werden die zentralen Teilbereiche näher erläutert.
@@ -19,7 +19,7 @@ Um eine manuelle Datenvorverarbeitung zu vermeiden, wurden die nachfolgend besch
 \end{figure}
 
 \subsection{Herunterladen der Daten}
-Sowohl der swissALTI3D- als auch der swissIMAGE-Datensatz stehen kostenfrei über die swisstopo-Webseite zum Download bereit (siehe Abbildung \ref{fig_swisstopo_datenbezug}). Zu Beginn wird der gewünschte geografische Bereich definiert. Dies kann durch die Auswahl einer Gemeinde, eines Kantons oder durch das manuelle Festlegen eines Bereichs auf der Karte erfolgen (siehe Bereich A in Abbildung \ref{fig_swisstopo_datenbezug}). Anschliessend werden das gewünschte Datenformat sowie die entsprechende Auflösung ausgewählt (siehe Bereich B in Abbildung \ref{fig_swisstopo_datenbezug}). Daraufhin kann eine CSV-Datei heruntergeladen werden, die eine Sammlung von Download-Links zu den einzelnen Datensätzen enthält. Jeder Datensatz repräsentiert dabei einen geografischen Bereich von einem Quadratkilometer. Diese Bereiche werden im Folgenden als ``Tiles'' bezeichnet. Um die einzelnen Tiles nicht manuell herunterladen zu müssen, wurde ein Python-Skript entwickelt, das die CSV-Datei einliest, die referenzierten Dateien automatisiert herunterlädt und strukturiert in entsprechenden Ordnern ablegt.
+Sowohl der swissALTI3D- als auch der swissIMAGE-Datensatz stehen kostenfrei über die swisstopo-Webseite zur Verfügung (siehe Abbildung \ref{fig_swisstopo_datenbezug}). Zu Beginn wird der gewünschte geografische Bereich definiert. Dies kann durch die Auswahl einer Gemeinde, eines Kantons oder durch das manuelle Festlegen eines Bereichs auf der Karte erfolgen (siehe Bereich A in Abbildung \ref{fig_swisstopo_datenbezug}). Anschliessend werden das gewünschte Datenformat sowie die entsprechende Auflösung ausgewählt (siehe Bereich B in Abbildung \ref{fig_swisstopo_datenbezug}). Daraufhin kann eine CSV-Datei heruntergeladen werden, die eine Sammlung von Download-Links zu den einzelnen Datensätzen enthält. Jeder Datensatz repräsentiert dabei einen geografischen Bereich von einem Quadratkilometer. Diese Bereiche werden nachfolgend als ``Tiles'' bezeichnet. Um die einzelnen Tiles nicht manuell herunterladen zu müssen, wurde ein Python-Skript entwickelt, das die CSV-Datei einliest, die referenzierten Dateien automatisiert herunterlädt und strukturiert in entsprechenden Ordnern ablegt.
 
 \begin{figure}[H]
     \caption{Herunterladen der swisstopo Daten (Eigene Darstellung)}
@@ -28,7 +28,7 @@ Sowohl der swissALTI3D- als auch der swissIMAGE-Datensatz stehen kostenfrei übe
 \end{figure}
 
 
-Die in den CSV-Dateien enthaltenen Download-Links decken nicht in allen Fällen einen vollständig zusammenhängenden geografischen Bereich ab. Wird etwa die Region Sarganserland auf der swisstopo-Webseite ausgewählt und die heruntergeladenen Tiles zu einem Gesamtbild zusammengesetzt, zeigen sich Datenlücken in Form schwarzer Bereiche (siehe Abbildung \ref{fig_swisstopo_daten_luecken}). Da die Datensätze jedoch georeferenziert sind und auf dem LV95-Koordinatensystem basieren, lassen sich diese fehlenden Bereiche identifizieren und entsprechend schliessen (siehe Abbildung \ref{fig_swisstopo_daten_luecken}). 
+Die CSV-Dateien decken nicht in allen Fällen einen vollständig zusammenhängenden geografischen Bereich ab. Wird etwa die Region Sarganserland auf der swisstopo-Webseite ausgewählt und die heruntergeladenen Tiles zu einem Gesamtbild zusammengesetzt, zeigen sich Datenlücken in Form schwarzer Bereiche (siehe Abbildung \ref{fig_swisstopo_daten_luecken}). Da die Datensätze jedoch georeferenziert sind und auf dem LV95-Koordinatensystem basieren, lassen sich diese fehlenden Bereiche identifizieren und entsprechend schliessen (siehe Abbildung \ref{fig_swisstopo_daten_luecken}). 
 
 \begin{figure}[H]
     \caption{Lücken in swisstopo-Daten (links) mit automatischer Korrektur (rechts) (Eigene Darstellung)}
@@ -37,7 +37,7 @@ Die in den CSV-Dateien enthaltenen Download-Links decken nicht in allen Fällen 
 \end{figure}
 
 \subsection{Extrahierung der Höhenwerte und Bilddaten}
-Nach dem Herunterladen der Daten werden sowohl die Bildinformationen als auch die Höhendaten aus den GeoTIFF-Dateien extrahiert und als eigenständige Texturen gespeichert. Die Höhenwerte werden dabei in Form eines Graustufenbildes abgelegt, wobei helle Bereiche hohe Höhenwerte und dunkle Bereiche niedrige Höhenwerte repräsentieren (siehe Abbildung \ref{fig_heightmap_beispiel}).
+Nach dem Herunterladen der Daten werden sowohl die Bildinformationen als auch die Höhendaten aus den GeoTIFF-Dateien extrahiert und als eigenständige Texturen gespeichert. Die Höhenwerte werden in Form eines Graustufenbildes abgelegt, wobei helle Bereiche hohe Höhenwerte und dunkle Bereiche niedrige Höhenwerte repräsentieren (siehe Abbildung \ref{fig_heightmap_beispiel}).
 
 \begin{figure}[H]
     \caption{Extrahierte Höhenwerte als Graustufenbild (Eigene Darstellung)}
@@ -45,7 +45,7 @@ Nach dem Herunterladen der Daten werden sowohl die Bildinformationen als auch di
     \label{fig_heightmap_beispiel}
 \end{figure}
 
-Um die Geopositionsinformationen zu erhalten, werden diese direkt in den Dateinamen der erzeugten Texturen integriert. Da die swisstopo-Daten in Form einzelner Tiles bereitgestellt werden, müssen diese in einem nächsten Schritt zu einem Gesamtbild zusammengesetzt werden. Die Positionierung erfolgt anhand des LV95-Koordinatensystems. Dabei zeigt sich jedoch ein Problem. Jede Tile besitzt einen eigenen minimalen und maximalen Höhenwert. Werden diese ohne weitere Verarbeitung kombiniert, entstehen keine fliessenden Übergänge. Um dieses Problem zu beheben, werden die Höhenwerte aller Tiles mithilfe eines globalen Minimal- und Maximalwertes normalisiert und somit konsistente Übergänge geschaffen (siehe Abbildung \ref{fig_heightmap_sargans}).
+Um die Geopositionsinformationen beizubehalten, werden diese in die Dateinamen der erzeugten Texturen integriert. Da die swisstopo-Daten in Form einzelner Tiles bereitgestellt werden, müssen diese in einem nächsten Schritt zu einem Gesamtbild zusammengesetzt werden. Die Positionierung erfolgt anhand des LV95-Koordinatensystems. Dabei zeigt sich jedoch ein Problem. Jede Tile besitzt einen eigenen minimalen und maximalen Höhenwert. Werden die Tiles ohne weitere Verarbeitung kombiniert, entstehen keine fliessenden Übergänge. Um dieses Problem zu beheben, werden die Höhenwerte aller Tiles mithilfe eines globalen Minimal- und Maximalwertes normalisiert und somit konsistente Übergänge geschaffen (siehe Abbildung \ref{fig_heightmap_sargans}).
 
 \begin{figure}[H]
     \caption{Zusammengesetztes Graustufenbild von Sargans mit fliessenden (links) und nicht fliessenden (rechts) Übergängen (Eigene Darstellung)}
@@ -53,7 +53,7 @@ Um die Geopositionsinformationen zu erhalten, werden diese direkt in den Dateina
     \label{fig_heightmap_sargans}
 \end{figure}
 
-Das Extrahieren der Farbwerte aus dem swissIMAGE-Datensatz gestaltet sich vergleichsweise unkompliziert, da lediglich die Farbinformationen aus den Dateien ausgelesen werden müssen und keine zusätzliche Normalisierung erforderlich ist (siehe Abbildung \ref{fig_textur_sargans}). Aufgrund unterschiedlicher Aufnahmezeitpunkte der Luftbilder können jedoch visuelle Diskrepanzen auftreten, wie sie im Bereich A von Abbildung \ref{fig_textur_sargans} zu erkennen sind.
+Das Extrahieren der Farbwerte aus dem swissIMAGE-Datensatz gestaltet sich vergleichsweise unkompliziert, da lediglich die Farbinformationen aus den Dateien ausgelesen werden müssen und keine zusätzliche Normalisierung erforderlich ist (siehe Abbildung \ref{fig_textur_sargans}). Aufgrund unterschiedlicher Aufnahmezeitpunkte der Luftbilder können jedoch visuelle Diskrepanzen auftreten, wie sie im Bereich A von Abbildung \ref{fig_textur_sargans}, zu erkennen sind.
 
 \begin{figure}[H]
     \caption{Zusammengesetztes Luftbild von Sargans (Eigene Darstellung)}
@@ -62,11 +62,11 @@ Das Extrahieren der Farbwerte aus dem swissIMAGE-Datensatz gestaltet sich vergle
 \end{figure}
 
 \subsection{Aufteilung in kleinere Bilddateien}
-Wie in Kapitel \ref{chap_datengrundlage} beschrieben, variiert der benötigte Festplattenspeicher der swisstopo-Datensätze in Abhängigkeit von Auflösung und geografischem Gebiet. Für die Region Sargans ergibt sich bei der höchsten Auflösung von 10 cm pro Bildpunkt ein zusammengesetztes Luftbild mit einer Grösse von rund 7.5GB. Eine derart grosse Datenmenge ist für eine browserbasierte Anwendung nur eingeschränkt geeignet, da andernfalls mit erheblichen Ladezeiten zu rechnen ist. Zwar bieten browserbasierte Anwendungen den Vorteil, ortsunabhängig nutzbar zu sein, jedoch müssen die erforderlichen Daten zunächst auf das Endgerät übertragen werden. Abhängig von der verfügbaren Internetbandbreite kann dieser Vorgang viel Zeit in Anspruch nehmen. Das vollständige Herunterladen grosser Datenmengen stellt daher – selbst unter Verwendung von Ladeindikatoren – keine skalierbare Lösung dar.
+Wie in Kapitel \ref{chap_datengrundlage} beschrieben, variiert der benötigte Festplattenspeicher der swisstopo-Datensätze in Abhängigkeit von Auflösung und geografischem Gebiet. Für die Region Sargans ergibt sich bei der höchsten Auflösung von 10 cm pro Bildpunkt ein zusammengesetztes Luftbild mit einer Grösse von 7.5 GB. Eine derart grosse Datenmenge ist für eine browserbasierte Anwendung nicht geeignet, da mit erheblichen Ladezeiten zu rechnen ist. Zwar bieten browserbasierte Anwendungen den Vorteil, ortsunabhängig nutzbar zu sein, jedoch müssen die erforderlichen Daten zunächst auf das Endgerät übertragen werden. Abhängig von der verfügbaren Internetbandbreite kann dieser Vorgang viel Zeit in Anspruch nehmen. Das Herunterladen grosser Datenmengen stellt daher keine skalierbare Lösung dar.
 
 Zur Bewältigung dieser Problematik werden im Rahmen der Datenvorverarbeitung mehrere Schritte durchgeführt. Zunächst wird das Gesamtbild in kleinere Bilddateien aufgeteilt. Um sowohl den Speicherbedarf als auch die Ladezeiten zu verkürzen, werden diese anschliessend mittels eines Downsampling-Algorithmus skaliert.
 
-Die Aufteilung der Bilddaten erfolgt auf Basis des Quadtree-Algorithmus, wobei Tiles in unterschiedlichen Auflösungsstufen (Level of Detail, LOD) erzeugt werden. Die jeweilige Auflösung ist dabei direkt an die Baumtiefe des Quadtrees gekoppelt. Für die erste Auflösung (LOD 1) wird das Gesamtbild in 4 (4$^1$) Tiles aufgeteilt. Für die zweite Auflösung sind es hingegen 16 (4$^2$) etc. Abbildung \ref{fig_textur_teilbilder_quadtree} veranschaulicht die Aufteilung eines Gesamtbildes in Tiles unterschiedlicher Auflösung.
+Die Aufteilung der Bilddaten erfolgt auf Basis des Quadtree-Algorithmus, wobei Tiles in unterschiedlichen Auflösungsstufen (\acrshort{LOD}) erzeugt werden. Die jeweilige Auflösung ist dabei direkt an die Baumtiefe des Quadtrees gekoppelt. In der ersten Detailstufe (LOD 1) wird das Gesamtbild in 4 (4$^1$) Tiles aufgeteilt. In der zweiten Detailstufe (LOD 2) erhöht sich diese Anzahl auf 16 (4$^2$). Abbildung \ref{fig_textur_teilbilder_quadtree} veranschaulicht die Aufteilung eines Gesamtbildes in Tiles mit unterschiedlichen Auflösungsstufen.
 \begin{figure}[H]
     \caption{Aufteilung in Tiles mit unterschiedlichen Auflösungen (Eigene Darstellung)}
     \includegraphics[width=1.0\linewidth]{content/00_assets/zerlegung_in_teilbilder.png}
@@ -74,7 +74,7 @@ Die Aufteilung der Bilddaten erfolgt auf Basis des Quadtree-Algorithmus, wobei T
 \end{figure}
 
 \subsection{Ermittlung des quadratischen Bildausschnitts}
-Grafikkarten verarbeiten Texturen mit gleich langen Seiten (500 × 500 Pixel) besonders effizient. Das zusammengesetzte Gesamtbild weist jedoch je nach Region und gewähltem Ausschnitt unterschiedliche Seitenverhältnisse auf. Daher wird das Bild zusätzlich auf einen quadratischen Ausschnitt begrenzt (siehe Abbildung \ref{fig_begrenzung_bildausschnitt}). Dieser Ausschnitt wird so gewählt, dass sich das Gesamtbild vollständig und ohne Restflächen in Tiles unterteilen lässt (siehe LOD 2 in Abbildung \ref{fig_textur_teilbilder_quadtree}) 
+Grafikkarten verarbeiten Texturen mit gleich langen Seiten (500 × 500 Pixel) besonders effizient. Das Gesamtbild weist jedoch je nach Region und gewähltem Ausschnitt unterschiedliche Seitenverhältnisse auf. Daher wird das Bild zusätzlich auf einen quadratischen Ausschnitt begrenzt (siehe Abbildung \ref{fig_begrenzung_bildausschnitt}). Dieser Ausschnitt wird so gewählt, dass sich das Gesamtbild vollständig und ohne Restflächen in Tiles unterteilen lässt (siehe LOD 2 in Abbildung \ref{fig_textur_teilbilder_quadtree}) 
 
 \begin{figure}[H]
     \caption{Begrenzung Bildausschnitt (Eigene Darstellung)}
@@ -84,20 +84,20 @@ Grafikkarten verarbeiten Texturen mit gleich langen Seiten (500 × 500 Pixel) be
 
 \subsection{Automatische Ermittlung der maximalen Baumtiefe}
 \label{chap_ermittlung_baumtiefe}
-Da sich die Erstellung der Tiles am Quadtree Algorithmus orientiert, lassen sich die maximale Baumtiefe und damit die höchste verfügbare Detailstufe bereits im Vorfeld bestimmen. Zur Veranschaulichung dient folgendes Beispiel: Das Luftbild der Region Sargans besitzt eine Auflösung ($R$) von 2000 auf 2000 Bildpunkten. Bei einer Bodenauflösung von 2m pro Bildpunkt ergibt sich daraus eine effektive Tile-Auflösung ($T$) von 500px ($\frac{1000m}{\frac{2m}{1px}}$) pro km$^2$. Die maximale Baumtiefe ($L_{\max}$) kann auf Basis dieser Parameter mithilfe der Logarithmusfunktion berechnet werden. Für die Region Sargans ergibt sich daraus eine maximale Baumtiefe von 3, was der höchsten darstellbaren Detailstufe entspricht.
+Da sich die Erstellung der Tiles am Quadtree Algorithmus orientiert, lassen sich die maximale Baumtiefe und damit die höchste verfügbare Detailstufe bereits im Vorfeld bestimmen. Zur Veranschaulichung dient folgendes Beispiel: Das Luftbild der Region Sargans besitzt eine Auflösung ($R$) von 2000 auf 2000 Bildpunkten. Bei einer Bodenauflösung von 2 m pro Bildpunkt ergibt sich daraus eine effektive Tile-Auflösung ($T$) von 500 px ($\frac{1000m}{\frac{2m}{1px}}$) pro km$^2$. Die maximale Baumtiefe ($L_{\max}$) kann auf Basis dieser Parameter mithilfe der Logarithmusfunktion berechnet werden. Für die Region Sargans ergibt sich daraus eine maximale Baumtiefe von 3, was der höchsten darstellbaren Detailstufe entspricht.
 \[
 L_{\max} = (\log_2\frac{R}{T}) + 1
 \]
 
 \subsection{Border Patching}
-Auf Basis der extrahierten Höhen- und Bildinformationen lassen sich 3D-Modelle rekonstruieren. Die konkrete Generierung der Geometrie wird in Kapitel \ref{chap_erstellung_geometrie} beschrieben. Werden mehrere dieser Modelle nebeneinander angeordnet, zeigen sich an den Übergängen zwischen benachbarten Tiles sichtbare Risse (siehe schwarze Bereiche in Abbildung \ref{fig_risse_zwischen_3d_modellen}). Diese Artefakte entstehen, da die Höhenwerte entlang der gemeinsamen Kanten nicht exakt mit den Höhenwerten der angrenzenden Tiles übereinstimmen. Infolgedessen weichen die Positionen der Vertices voneinander ab, wodurch sichtbare Lücken in der Geometrie entstehen.
+Auf Basis der extrahierten Höhen- und Bildinformationen lassen sich 3D-Modelle rekonstruieren. Werden mehrere dieser Modelle nebeneinander angeordnet, zeigen sich an den Übergängen zwischen benachbarten Tiles sichtbare Risse (siehe schwarze Bereiche in Abbildung \ref{fig_risse_zwischen_3d_modellen}). Diese Artefakte entstehen, weil die Höhenwerte entlang der gemeinsamen Kanten nicht exakt mit den Höhenwerten der angrenzenden Tiles übereinstimmen. Infolgedessen weichen die Positionen der Vertices voneinander ab und es entstehen sichtbare Lücken in der Geometrie.
 \begin{figure}[H]
     \caption{Risse zwischen 3D Modellen der gleichen Detailstufe (Eigene Darstellung)}
     \includegraphics[width=.3\linewidth]{content/00_assets/risse_zwischen_gleichen_detailstufen.png}
     \label{fig_risse_zwischen_3d_modellen}
 \end{figure}
 
-Diese Problematik lässt mit dem sogenannten ``Border Patching'' beheben. Dabei werden an den Kanten der Tiles die Daten der jeweils angrenzenden Nachbartiles übernommen, sodass ein kleiner Überlappungsbereich entsteht. Bereits ein Überlappungsbereich von einem Pixel ist ausreichend, um sichtbare Risse zu vermeiden. Abbildung \ref{fig_border_patching} veranschaulicht diesen Überlappungsbereich in Form roter Linien. Entlang dieser Kanten werden die Höhenwerte der benachbarten Tiles übernommen (von Tile 1 nach Tile 2), wodurch nahtlose Übergänge entstehen.
+Diese Problematik lässt sich mittels des sogenannten ``Border Patching'' beheben. Dabei werden an den Kanten der Tiles die Daten der jeweils angrenzenden Nachbar-Tiles übernommen, sodass ein Überlappungsbereich entsteht. Bereits ein Bereich von einem Pixel ist ausreichend, um sichtbare Risse zu vermeiden. Abbildung \ref{fig_border_patching} veranschaulicht diese Überlappungsbereiche in Form roter Linien. Entlang dieser Kanten werden die Höhenwerte der benachbarten Tiles übernommen (d. h. von 1 nach 2 etc.).
 
 \begin{figure}[H]
     \caption{Border Patching (Eigene Darstellung)}
@@ -106,11 +106,11 @@ Diese Problematik lässt mit dem sogenannten ``Border Patching'' beheben. Dabei 
 \end{figure}
 
 \subsection{Relative Geopositionsinformationen}
-Das Koordinatensystem von Three.js besitzt einen anderen Ursprung (0/0) als die swisstopo Daten (E=2’600’000 / N=1’200’000). Um die 3D-Modelle in Three.js korrekt zu positionieren, werden daher relative Geopositionsinformationen berechnet. Zunächst wird der Mittelpunkt des Gesamtbildes im LV95-Koordinatensystem bestimmt. Anschliessend wird für jedes Tile der relative Abstand zu diesem Mittelpunkt berechnet und in den zugehörigen Metadaten gespeichert. Auf diese Weise können die 3D-Modelle in Three.js relativ zum Koordinatenursprung platziert werden.
+Das Koordinatensystem von Three.js besitzt einen anderen Ursprung (0/0) als die swisstopo Daten (E=2’600’000 / N=1’200’000). Um die 3D-Modelle in Three.js korrekt zu positionieren, werden relative Geopositionsinformationen berechnet. Zunächst wird der Mittelpunkt des Gesamtbildes im LV95-Koordinatensystem bestimmt. Anschliessend wird für jedes Tile der relative Abstand zu diesem Mittelpunkt berechnet und in den Metadaten gespeichert. Auf diese Weise können die 3D-Modelle in Three.js relativ zum Koordinatenursprung platziert werden.
 
 \subsection{Generierung von Metadaten}
 \label{chap_generierung_metadaten}
-Um wichtige Informationen in Bezug auf die swisstopo Daten nicht zu verlieren, werden entsprechende Metadaten generiert. Diese werden als JSON-Datei gespeichert (siehe Abbildung \ref{fig_ausschnitt_metadaten}) und zur Laufzeit der Webanwendung eingelesen. Tabelle \ref{table_metadata} gibt einen Überblick über die enthaltenen Metadaten sowie deren jeweiligen Verwendungszweck.
+Um wichtige Informationen in Bezug auf die swisstopo Daten nicht zu verlieren, werden entsprechende Metadaten in Form einer JSON-Datei erzeugt (siehe Abbildung \ref{fig_ausschnitt_metadaten}). Das JSON-Format ermöglicht ein einfaches Einlesen dieser Informationen zur Laufzeit der Webanwendung. Tabelle \ref{table_metadata} gibt einen Überblick über die Metadaten sowie deren jeweiligen Verwendungszweck.
 
 \begin{table}[H]
     \caption{Erstellte Metadaten und Verwendungszweck (Eigene Darstellung)}
@@ -131,7 +131,7 @@ Um wichtige Informationen in Bezug auf die swisstopo Daten nicht zu verlieren, w
 \end{table}
 
 \begin{figure}[H]
-    \caption{Auszug aus den generierten Metadaten (Eigene Darstellung)}
+    \caption{Auszug aus den generierten Metadaten im JSON-Format (Eigene Darstellung)}
     \includegraphics[width=.5\linewidth]{content/00_assets/ausschnitt_metadaten.png}
     \label{fig_ausschnitt_metadaten}
 \end{figure}
@@ -141,7 +141,7 @@ Dieses Kapitel beschreibt die Implementierung der 3D-Terrainvisualisierung auf B
 
 \subsection{Erstellung der 3D-Geometrie}
 \label{chap_erstellung_geometrie}
-Zur Darstellung der Gebirgsgeometrie wird ein Gitternetz aus Punkten verwendet. In Three.js kommt hierfür die sogenannte ``PlaneGeometry'' zum Einsatz, welche eine Ebene im 3D-Raum repräsentiert (siehe Abbildung \ref{fig_threejs_plane_geometry}). Durch eine entsprechende Erhöhung der Segmentierung lässt sich die Auflösung dieser Geometrie beliebig verfeinern.
+Zur Darstellung der Gebirgsgeometrie wird ein Gitternetz aus Punkten verwendet. In \threejs{} kommt hierfür die sogenannte ``PlaneGeometry'' zum Einsatz, welche eine Ebene im 3D-Raum repräsentiert (siehe Abbildung \ref{fig_threejs_plane_geometry}). Durch eine entsprechende Erhöhung der Segmentierung lässt sich die Auflösung dieser Geometrie beliebig verfeinern.
 
 \begin{figure}[H]
     \caption{Three.js PlaneGeometry \parencite{threejs_beispiel_plane_geometry_2025}}
@@ -149,7 +149,7 @@ Zur Darstellung der Gebirgsgeometrie wird ein Gitternetz aus Punkten verwendet. 
     \label{fig_threejs_plane_geometry}
 \end{figure}
 
-Um Risse im Terrain an den Übergängen zwischen unterschiedlichen LOD-Stufen zu vermeiden, wird anstelle eines diagonalen Gitters ein sternförmiges Punktmuster verwendet (siehe Abbildung \ref{fig_plane_geometry_star_structure}). In Kombination mit dem sogenannten ``Index-Stitching'' können dadurch sichtbare Risse zwischen den Detailstufen eliminiert werden. Eine detaillierte Erläuterung dieses Verfahrens folgt in Kapitel \ref{chap_quadtree_algorithmus}.
+Um Risse im Terrain an den Übergängen zwischen unterschiedlichen LOD-Stufen zu vermeiden, wird ein sternförmiges Gitternetz verwendet (siehe Abbildung \ref{fig_plane_geometry_star_structure}). In Kombination mit dem sogenannten ``Index-Stitching'' können dadurch sichtbare Risse zwischen den Detailstufen eliminiert werden. Eine detaillierte Erläuterung dieses Verfahrens folgt in Kapitel \ref{chap_quadtree_algorithmus}.
 
 \begin{figure}[H]
     \caption{Gitternetz mit sternförmiger Struktur \parencite[S. 54]{frostbite_terrain_rendering_2007}}
@@ -157,24 +157,24 @@ Um Risse im Terrain an den Übergängen zwischen unterschiedlichen LOD-Stufen zu
     \label{fig_plane_geometry_star_structure}
 \end{figure}
 
-Obwohl Three.js eine Vielzahl vordefinierter 3D-Geometrien bereitstellt, besteht auch die Möglichkeit, eigene Geometrien zu definieren. Hierfür stellt Three.js die Klasse \textit{BufferGeometry} zur Verfügung. Auf dieser Basis wurde eine individuelle Geometrie implementiert, um die gewünschte sternförmige Struktur abzubilden. Wie in Kapitel \ref{chap_render_pipelines} erläutert, setzen sich 3D-Modelle aus Dreiecken zusammen, die wiederum aus einzelnen Punkten, sogenannten Vertices, bestehen. Die Zusammensetzung dieser Punkte zu Dreiecken wird über sogenannte ``Indices'' definiert. Abbildung \ref{fig_create_geometry_with_indices} veranschaulicht diesen Zusammenhang exemplarisch: Zur Erzeugung des Dreiecks $abi$ werden die Punkte $a$, $b$ und $i$ miteinander verbunden. Dieses Verfahren wird für alle weiteren Dreiecke wiederholt, bis die vollständige sternförmige Struktur entsteht. 
+Obwohl Three.js eine Vielzahl vordefinierter 3D-Geometrien bereitstellt, besteht auch die Möglichkeit, eigene Geometrien zu definieren. Zu diesem Zweck stellt Three.js die Klasse \textit{BufferGeometry} zur Verfügung. Auf dieser Basis wurde eine individuelle Geometrie implementiert, um die gewünschte sternförmige Struktur abzubilden. Wie in Kapitel \ref{chap_render_pipelines} erläutert, setzen sich 3D-Modelle aus Dreiecken zusammen, die wiederum aus einzelnen Punkten, sogenannten Vertices, bestehen. Die Zusammensetzung dieser Punkte zu Dreiecken wird über sogenannte ``Indices'' definiert. Abbildung \ref{fig_create_geometry_with_indices} veranschaulicht diesen Zusammenhang exemplarisch: Zur Erzeugung des Dreiecks $abi$ werden die Punkte $a$, $b$ und $i$ miteinander verbunden. Dieses Verfahren wird für alle weiteren Dreiecke wiederholt, bis die vollständige sternförmige Struktur entsteht. 
 \begin{figure}[H]
     \caption{Erstellung der Geometrie mittels Indices (Eigene Darstellung)}
     \includegraphics[width=.7\linewidth]{content/00_assets/erstellung_geometry_mittels_indices.png}
     \label{fig_create_geometry_with_indices}
 \end{figure}
 
-Zu diesem Zeitpunkt liegen alle Vertices der Geometrie noch auf einer Ebene. Um daraus ein dreidimensionales Terrain zu erzeugen, werden die Punkte anhand der extrahierten Höhendaten vertikal verschoben. Diese Verschiebung erfolgt im Vertex Shader (siehe Kapitel \ref{chap_render_pipelines}). Zunächst werden die Höhenwerte aus den Graustufenbildern ausgelesen und mithilfe der zuvor berechneten globalen Minimal- und Maximalwerte skaliert. Auf Basis dieses skalierten Höhenwertes werden die Vertices der Geometrie entlang der Höhenachse entsprechend versetzt (siehe Abbildung \ref{fig_verschiebung_punkte_vertex_shader}). Der in Abbildung \ref{fig_verschiebung_punkte_vertex_shader} dargestellte Shadercode ist in der \acrfull{TSL} verfasst. Three.js unterstützt sowohl die WebGL- als auch die WebGPU-Grafikschnittstelle, deren native Shader-Sprachen sich unterscheiden. TSL dient hierbei als Abstraktionsschicht und ermöglicht es, beide Schnittstellen mit einer einheitlichen Programmiersprache anzusprechen. Abhängig vom verfügbaren Hardwaresupport wählt Three.js automatisch die geeignete Grafikschnittstelle aus.
+Momentan liegen alle Vertices der Geometrie auf einer Ebene. Um daraus ein dreidimensionales Terrain zu erzeugen, werden die Punkte anhand der extrahierten Höhendaten vertikal verschoben. Diese Verschiebung erfolgt im Vertex-Shader (siehe Kapitel \ref{chap_render_pipelines}). Zunächst werden die Höhenwerte aus den Graustufenbildern ausgelesen und mithilfe der zuvor berechneten globalen Minimal- und Maximalwerte skaliert. Auf Basis dieses skalierten Wertes werden die Vertices der Geometrie entlang der vertikalen Höhenachse entsprechend versetzt (siehe Abbildung \ref{fig_verschiebung_punkte_vertex_shader}). Der in Abbildung \ref{fig_verschiebung_punkte_vertex_shader} dargestellte Shadercode ist in der \acrfull{TSL} verfasst. Three.js unterstützt sowohl die WebGL- als auch die WebGPU-Grafikschnittstelle. TSL dient hierbei als Abstraktionsschicht und ermöglicht es, beide Schnittstellen mittels einer Programmiersprache anzusprechen. Abhängig vom verfügbaren Hardwaresupport wählt Three.js automatisch die geeignete Grafikschnittstelle aus.
 
 \begin{figure}[H]
-    \caption{Verschiebung der Punkte im Vertex Shader (Eigene Darstellung)}
+    \caption{Verschiebung der Punkte im Vertex-Shader (Eigene Darstellung)}
     \includegraphics[width=.9\linewidth]{content/00_assets/positionierung_punkte_vertex_shader.png}
     \label{fig_verschiebung_punkte_vertex_shader}
 \end{figure}
 
 \subsection{Texturierung der 3D-Geometrie}
 \label{chap_texturierung_3d_geometrie}
-Zur Darstellung von 3D-Modellen in Three.js wird neben der Geometrie auch ein sogenanntes ``Material'' benötigt. Während die Geometrie die räumliche Struktur eines Modells beschreibt, bestimmt das Material dessen visuelles Erscheinungsbild. Dieses kann neben Texturen auch Farbwerte sowie weitere Darstellungseigenschaften enthalten. Um einen Würfel in grüner Farbe darzustellen, werden in Three.js eine \textit{BoxGeometry} sowie ein \textit{MeshBasicMaterial} mit der entsprechenden Farbe verwendet (siehe Abbildung \ref{fig_threejs_box}).
+Zur Darstellung von 3D-Modellen in Three.js wird nebst der Geometrie auch ein sogenanntes ``Material'' benötigt. Während die Geometrie die räumliche Struktur eines Modells beschreibt, bestimmt das Material dessen \textbf{visuelles Erscheinungsbild}. Dieses kann Texturen, Farbwerte sowie weitere Darstellungseigenschaften umfassen. Zur Darstellung eines grünen Würfels werden in Three.js beispielsweise eine \textit{BoxGeometry} sowie ein \textit{MeshBasicMaterial} mit der entsprechenden Farbe verwendet (siehe Abbildung \ref{fig_threejs_box}).
 
 \begin{figure}[H]
     \caption{Beispielcode zur Erstellung eines Würfels in Three.js \parencite{threejs_beispiel_box_geometry_2025}}
@@ -190,12 +190,12 @@ Analog zum vorherigen Beispiel kann auch die 3D-Geometrie eines Gebirges mit ein
     \label{fig_texturiertes_3d_modell}
 \end{figure}
 
-\subsection{Quadtree Algorithmus}
+\subsection{Quadtree-Algorithmus}
 \label{chap_quadtree_algorithmus}
-Als zentraler Algorithmus kommt ein Quadtree zum Einsatz, da dieser im Vergleich zu Geometry Clipmaps und CDLOD eine einfachere Implementierung erlaubt. Wie in Kapitel \ref{chap_algorithmen} beschrieben, benötigt ein Quadtree ein Kriterium, anhand dessen entschieden wird, wann neue Nodes erzeugt werden. In dieser Arbeit wird hierfür die euklidische Distanz zwischen der Kameraposition und dem Mittelpunkt einer Node herangezogen (siehe Abbildung \ref{fig_quadtree_split_metric}). Zusätzlich wird der Quadtree durch die zuvor berechnete maximale Baumtiefe begrenzt (siehe Kapitel \ref{chap_ermittlung_baumtiefe}). Als Eingabeparameter dienen die Länge und Breite des darzustellenden Gebirges. Zur Laufzeit wird die aktuelle Kameraposition fortlaufend in den Quadtree eingefügt, woraufhin die Abstände zu den einzelnen Nodes berechnet und die Struktur dynamisch angepasst wird.
+Als zentraler Algorithmus kommt ein Quadtree zum Einsatz, da dieser im Vergleich zu Geometry Clipmaps und CDLOD eine einfachere Implementierung erlaubt. Wie in Kapitel \ref{chap_algorithmen} beschrieben, benötigt ein Quadtree ein Kriterium, anhand dessen entschieden wird, wann neue Nodes erzeugt werden. In dieser Arbeit wird zu diesem Zweck die euklidische Distanz zwischen der Kameraposition und dem Mittelpunkt einer Node herangezogen (siehe Abbildung \ref{fig_quadtree_split_metric}). Zusätzlich wird der Quadtree durch die zuvor berechnete maximale Baumtiefe begrenzt (siehe Kapitel \ref{chap_ermittlung_baumtiefe}). Als Eingabeparameter dienen die Länge und Breite des darzustellenden Gebirges. Zur Laufzeit wird die aktuelle Kameraposition fortlaufend in den Quadtree eingefügt, woraufhin die Abstände zu den einzelnen Nodes berechnet und die Struktur dynamisch angepasst wird.
 
 \begin{figure}[H]
-    \caption{Quadtree Kriterium zur Erstellung neuer Nodes (Eigene Darstellung)}
+    \caption{Quadtree-Kriterium zur Erstellung neuer Nodes (Eigene Darstellung)}
     \includegraphics[width=.8\linewidth]{content/00_assets/quadtree_split_metric.png}
     \label{fig_quadtree_split_metric}
 \end{figure}
@@ -209,7 +209,7 @@ Die einzelnen Nodes des Quadtrees enthalten Informationen über das jeweils abge
     \label{fig_assoziierung_quadtree_node_metadaten}
 \end{figure}
 
-Der Mittelpunkt einer Node wird aus dem in den Metadaten gespeicherten Bounding-Box-Wert (\textit{bbox\_world\_space}) bestimmt, während die zugehörige Baumtiefe über das Feld \textit{level} definiert ist (siehe Abbildung \ref{fig_ausschnitt_metadaten_tile}). Auf Basis dieser Informationen wird in den Metadaten nach dem passenden Eintrag gesucht und anschliessend das entsprechende 3D-Modell erzeugt. Da sich die Struktur des Quadtrees dynamisch in Abhängigkeit von der Kameraposition verändert, wird zudem sichergestellt, dass nicht mehr benötigte Modelle entfernt werden.
+Der Node-Mittelpunkt sowie dessen Baumtiefe werden anhand der gespeicherten Metadaten bestimmt (siehe \textit{bbox\_world\_space} sowie \textit{level} in Abbildung \ref{fig_ausschnitt_metadaten_tile}). Auf Basis dieser Informationen wird in den Metadaten nach dem passenden Eintrag gesucht und anschliessend das entsprechende 3D-Modell erzeugt. Da sich die Struktur des Quadtrees dynamisch in Abhängigkeit von der Kameraposition verändert, wird sichergestellt, dass nicht mehr benötigte Modelle entfernt werden.
 \begin{figure}[H]
     \caption{Ausschnitt Tile Metadaten (Eigene Darstellung)}
     \includegraphics[width=.7\linewidth]{content/00_assets/ausschnitt_metadaten_tile.png}
@@ -225,7 +225,7 @@ Je nach Baumtiefe erstrecken sich die einzelnen Nodes über einen grösseren Ber
     \label{fig_visuelle_diskrepanzen_zwischen_unterschiedlichen_lod_leveln}
 \end{figure}
 
-Die Risse entstehen, da feinere Geometrien zusätzliche Vertices enthalten, die nicht mit den Vertices der gröberen Geometrien übereinstimmen. Diese zusätzlichen Vertices werden im Vertex-Shader ebenfalls verschoben, was zu sichtbaren Diskontinuitäten in der Geometrie führt (siehe Abbildung \ref{fig_risse_zwischen_3d_modellen_unterschiedlicher_baumtiefe}).
+Diese Risse entstehen, da feinere Geometrien zusätzliche Vertices enthalten, die nicht mit den Vertices der gröberen Geometrien übereinstimmen. Die zusätzlichen Vertices werden im Vertex-Shader ebenfalls verschoben, was zu sichtbaren Diskontinuitäten in der Geometrie führt (siehe Abbildung \ref{fig_risse_zwischen_3d_modellen_unterschiedlicher_baumtiefe}).
 \begin{figure}[H]
     \caption{Risse zwischen 3D-Modellen unterschiedlicher Baumtiefe (Eigene Darstellung)}
     \includegraphics[width=.5\linewidth]{content/00_assets/risse_zwischen_unterschiedlichen_baumtiefen.png}
@@ -233,7 +233,7 @@ Die Risse entstehen, da feinere Geometrien zusätzliche Vertices enthalten, die 
 \end{figure}
 
 \newpage
-Zur Behebung dieser Problematik wird das sogenannte ``Index-Stitching'' verwendet, ein Verfahren, das unter anderem in der Frostbite Engine eingesetzt wird. Wie in Kapitel \ref{chap_erstellung_geometrie} beschrieben, legen Indices fest, wie Vertices zu Dreiecken zusammengesetzt werden. Dieses Konzept kann jedoch auch genutzt werden, um bestimmte Vertices gezielt zu überspringen. Hierzu werden mehrere vordefinierte Index-Varianten berechnet, die unterschiedliche Übergangssituationen zwischen benachbarten Geometrien abdecken (siehe Abbildung \ref{fig_frostbite_index_stitching}). Zur Laufzeit wird für jede Geometrie die passende Index-Variante ausgewählt, sodass Risse an den Übergängen vermieden werden.
+Zur Behebung dieser Problematik wird das sogenannte ``Index-Stitching'' verwendet, ein Verfahren, das unter anderem in der Frostbite Engine eingesetzt wird. Wie in Kapitel \ref{chap_erstellung_geometrie} beschrieben, legen Indices fest, wie Vertices zu Dreiecken zusammengesetzt werden. Dieses Konzept kann auch genutzt werden, um bestimmte Vertices gezielt zu überspringen. Dafür werden mehrere vordefinierte Index-Varianten berechnet, die unterschiedliche Übergangssituationen zwischen benachbarten Geometrien abdecken (siehe Abbildung \ref{fig_frostbite_index_stitching}). Zur Laufzeit wird für jede Geometrie die passende Index-Variante ausgewählt, sodass Risse an den Übergängen vermieden werden.
 \begin{figure}[H]
     \caption{Frostbite Engine Index-Stitching \parencite[S. 55]{frostbite_terrain_rendering_2007}}
     \includegraphics[width=.5\linewidth]{content/00_assets/frostbite_index_stitching.png}
@@ -256,19 +256,19 @@ Abbildung \ref{fig_wireframe_index_stitching} zeigt eine Wireframe-Ansicht zweie
     \label{fig_wireframe_index_stitching}
 \end{figure}
 
-Eine Limitation des Index-Stitching besteht darin, dass sich die Baumtiefe benachbarter Quadtree-Nodes höchstens um eine Stufe unterscheiden darf \parencite[S. 53]{frostbite_terrain_rendering_2007}. Um diese Voraussetzung zu erfüllen, wird der Quadtree entsprechend ausbalanciert.
+Eine Limitation des Index-Stitching besteht darin, dass sich die Baumtiefe benachbarter Quadtree-Nodes höchstens um eine Stufe unterscheiden darf \parencite[S. 53]{frostbite_terrain_rendering_2007}. Um diese Voraussetzung zu erfüllen, wird der Quadtree zusätzlich entsprechend ausbalanciert.
 
 \subsubsection{Hilfsvisualisierung}
 Um sowohl die Korrektheit des Quadtrees als auch der Index-Stitching Methode zu verfizieren wurde eine entsprechende Hilfsvisualisierung implementiert. Die einzelnen Nodes des Quadtrees werden als weisse Linien dargestellt. Nodes, bei denen ein Index-Stitching notwendig ist, sind durch rote Linien gekennzeichnet (siehe Abbildung \ref{fig_hilfsvisualisierung_quadtree_index_stitching}).
 \begin{figure}[H]
-    \caption{Hilfsvisualisierung für Quadtree und Index-Stitching Überprüfung (Eigene Darstellung)}
+    \caption{Hilfsvisualisierung zur Überprüfung des Quadtrees sowie des Index-Stitching-Verfahrens (Eigene Darstellung)}
     \includegraphics[width=.4\linewidth]{content/00_assets/hilfsvisualisierung_quadtree.png}
     \label{fig_hilfsvisualisierung_quadtree_index_stitching}
 \end{figure}
 
 \subsection{Steuerungselemente}
 \label{chap_steuerungselemente}
-Damit eine freie Bewegung durch das Gebirge möglich ist, müssen entsprechende Steuerungselemente implementiert werden. Der Betrachtungsausschnitt der Visualisierung wird durch eine Kamera definiert. In Three.js stehen verschiedene Arten von Kameras zur Verfügung. Eine ``Perspective Camera'' wird beispielsweise eingesetzt, um Objekte im 3D-Raum darzustellen. Dabei erscheinen die entsprechenden Objekte, abhängig von der Distanz zur Kamera, entsprechend grösser oder kleiner. Die ``Ortographic Camera'' stellt alle Objekte unabhängig von der Distanz gleich gross dar (siehe Abbildung \ref{fig_threejs_cameras}). Aus diesen Gründen wird für die Terrainvisualisierung eine Perspective Camera und für Hilfsvisualisierung eine Ortographic Camera verwendet. 
+Damit eine freie Bewegung durch das Gebirge möglich ist, müssen entsprechende Steuerungselemente implementiert werden. Der Betrachtungsausschnitt der Visualisierung wird durch eine Kamera definiert. In Three.js stehen verschiedene Arten von Kameras zur Verfügung. Eine ``Perspective Camera'' wird beispielsweise eingesetzt, um Objekte im 3D-Raum darzustellen. Dabei erscheinen diese, abhängig von der Distanz zur Kamera, entsprechend grösser oder kleiner. Die ``Ortographic Camera'' stellt alle Objekte unabhängig von der Distanz gleich gross dar (siehe Abbildung \ref{fig_threejs_cameras}). Aus diesen Gründen wurde für die Terrainvisualisierung eine Perspective Camera und für Hilfsvisualisierung eine Ortographic Camera verwendet. 
 \begin{figure}[H]
     \caption{Verschiedene Arten von Kameras in Three.js \parencite{threejs_exploring_cameras_2023}}
     \includegraphics[width=.5\linewidth]{content/00_assets/threejs_cameras.png}
@@ -309,18 +309,18 @@ Three.js bietet zahlreiche Möglichkeiten, die Ästhetik einer 3D-Visualisierung
     \label{fig_terrain_hdr_no_hdr}
 \end{figure}
 
-Zur Erstellung von HDR-Bildern existieren mehrere Ansätze. Einerseits können sie synthetisch am Computer erzeugt werden, andererseits lassen sich HDR-Bilder auch aus mehreren Einzelaufnahmen mithilfe spezieller Kamerasensoren berechnen \parencite{hdr_2022}. Zusätzlich stehen spezialisierte Plattformen wie Poly Haven\footnote{\url{https://polyhaven.com/hdris}} zur Verfügung.
+Zur Erstellung von HDR-Bildern existieren mehrere Ansätze. Einerseits können sie am Computer erzeugt werden, andererseits lassen sich HDR-Bilder auch aus mehreren Einzelaufnahmen mithilfe spezieller Kamerasensoren berechnen \parencite{hdr_2022}. Zusätzlich stehen spezialisierte Plattformen wie Poly Haven\footnote{\url{https://polyhaven.com/hdris}} zur Verfügung.
 
-Damit die Farbwerte von HDR-Bildern auf dem Bildschirm dargestellt werden können, müssen diese in ein darstellbares Helligkeitsspektrum überführt werden. Hierfür wird das sogenannte ``Tone Mapping'' verwendet. Three.js unterstützt verschiedene Tone-Mapping-Verfahren, die sich jeweils unterschiedlich auf Kontrast und Helligkeitsverteilung auswirken. Abbildung \ref{fig_tone_mapping_threejs} veranschaulicht die Effekte dieser Verfahren auf die finale Darstellung.
+Damit die Farbwerte von HDR-Bildern auf dem Bildschirm visualisiert werden können, müssen diese in ein darstellbares Helligkeitsspektrum überführt werden. Zu diesem Zweck wird das sogenannte ``Tone Mapping'' verwendet. Three.js unterstützt verschiedene Tone Mapping-Verfahren, die sich jeweils unterschiedlich auf Kontrast und Helligkeitsverteilung auswirken. Abbildung \ref{fig_tone_mapping_threejs} veranschaulicht die Effekte dieser Verfahren auf die finale Darstellung.
 
 \begin{figure}[H]
-    \caption{Verschiedene Tone Mapping-Verfahren in Three.js von links nach rechts (kein Tone Mapping, Agx, Filmic, Reinhard) (Eigene Darstellung)}
+    \caption{Einfluss verschiedener Tone Mapping-Verfahren in Three.js von links nach rechts (kein Tone Mapping, Agx, Filmic, Reinhard) (Eigene Darstellung)}
     \includegraphics[width=.8\linewidth]{content/00_assets/tone_mapping_threejs.png}
     \label{fig_tone_mapping_threejs}
 \end{figure}
 
 \subsection{Anisotropy}
-Zur Verbesserung der Performance können für Texturen sogenannte ``Mipmaps'' erzeugt werden. Dabei handelt es sich um herunterskalierte Versionen der ursprünglichen Textur (siehe Abbildung \ref{fig_mipmaps}). Abhängig von Betrachtungsabstand und Blickwinkel wählt die Grafikkarte automatisch die jeweils passende Mipmap-Stufe aus. Auf diese Weise werden für weiter entfernte Objekte kleinere Texturversionen verwendet, was den Speicherbedarf reduziert und die Performanz der Visualisierung erhöht \parencite{mipmaps_2023}.
+Zur Verbesserung der Performance können für Texturen sogenannte ``Mipmaps'' erzeugt werden. Dabei handelt es sich um herunterskalierte Versionen der ursprünglichen Textur (siehe Abbildung \ref{fig_mipmaps}). Abhängig von Betrachtungsabstand und Blickwinkel wählt die GPU automatisch die jeweils passende Mipmap-Stufe aus. Auf diese Weise werden für weiter entfernte Objekte kleinere Texturversionen verwendet, was den Speicherbedarf reduziert und die Performanz der Visualisierung erhöht \parencite{mipmaps_2023}.
 
 \begin{figure}[H]
     \caption{Mipmaps \parencite{mipmaps_2023}}
@@ -328,7 +328,7 @@ Zur Verbesserung der Performance können für Texturen sogenannte ``Mipmaps'' er
     \label{fig_mipmaps}
 \end{figure}
 
-Bei der Verwendung von Mipmaps kann es vorkommen, dass Texturen in grösserer Entfernung unscharf oder nur noch schwer erkennbar dargestellt werden. Um diesem Effekt entgegenzuwirken, kann der Anisotropy-Wert angepasst werden. Dieser legt fest, wie häufig die einzelnen Texel einer Mipmap während der Filterung berücksichtigt werden \parencite{threejs_anisotropy_2025}. Durch eine erhöhte Anisotropie lassen sich verwaschene Texturen, insbesondere bei schrägen Blickwinkeln, deutlich reduzieren (siehe die rot markierten Bereiche A und B in Abbildung \ref{fig_anisotropy}).
+Bei der Verwendung von Mipmaps kann es vorkommen, dass Texturen in grösserer Entfernung unscharf oder nur noch schwer erkennbar dargestellt werden. Um diesem Effekt entgegenzuwirken, kann der Anisotropy-Wert angepasst werden. Dieser legt fest, wie häufig die einzelnen Texel einer Mipmap während der Filterung berücksichtigt werden \parencite{threejs_anisotropy_2025}. Hiermit lassen sich verwaschene Texturen, insbesondere bei schrägen Blickwinkeln, deutlich reduzieren (siehe die rot markierten Bereiche A und B in Abbildung \ref{fig_anisotropy}).
 
 \begin{figure}[H]
     \caption{Texturen mit Anisotropy (links) und ohne (rechts) (Eigene Darstellung)}
@@ -337,16 +337,16 @@ Bei der Verwendung von Mipmaps kann es vorkommen, dass Texturen in grösserer En
 \end{figure}
 
 \subsection{Procedural Sky}
-Das Three.js-Ökosystem stellt zahlreiche Module zur Verfügung, mit denen sich realitätsnahe Visualisierungen umsetzen lassen. Ein Beispiel hierfür ist das Procedural Sky Plugin\footnote{\url{https://github.com/mrdoob/three.js/blob/dev/examples/webgpu_sky.html}}, das die Simulation eines Tag-Nacht-Zyklus ermöglicht. Über verschiedene Parameter, wie die Sonnenposition, kann die Beleuchtung gezielt angepasst und das dargestellte Gebirge in eine realistische Lichtumgebung eingebettet werden. Abbildung \ref{fig_procedural_sky} zeigt den Einfluss unterschiedlicher Sonnenpositionen auf die visuelle Darstellung des Terrains.
+Das Three.js-Ökosystem stellt zahlreiche Module zur Verfügung, mit denen sich realitätsnahe Visualisierungen umsetzen lassen. Ein Beispiel ist das Procedural Sky-Plugin\footnote{\url{https://github.com/mrdoob/three.js/blob/dev/examples/webgpu_sky.html}}, das die Simulation eines Tag-Nacht-Zyklus ermöglicht. Über verschiedene Parameter, wie die Sonnenposition, kann die Beleuchtung gezielt angepasst und das dargestellte Gebirge in eine realistische Lichtumgebung eingebettet werden. Abbildung \ref{fig_procedural_sky} zeigt den Einfluss unterschiedlicher Sonnenpositionen auf die visuelle Darstellung des Terrains.
 
 \begin{figure}[H]
-    \caption{Gebirge mit Procedural Sky Plugin (Eigene Darstellung)}
+    \caption{Gebirge mit Procedural Sky-Plugin (Eigene Darstellung)}
     \includegraphics[width=1.0\linewidth]{content/00_assets/threejs_procedural_sky.png}
     \label{fig_procedural_sky}
 \end{figure}
 
 \subsection{Tweaks}
-Die bislang behandelten ästhetischen Elemente verfügen über eine Vielzahl einstellbarer Parameter. Um deren Auswirkungen auf die visuelle Gestaltung nachvollziehen zu können, ist es wichtig, dass diese Parameter während der Laufzeit über geeignete GUI-Elemente angepasst werden können. Für die Verknüpfung von Einstellungsparametern mit grafischen Bedienelementen stehen verschiedene Bibliotheken zur Verfügung. Eine in der Three.js-Community weitverbreitete Lösung ist Tweakpane\footnote{\url{https://tweakpane.github.io/docs/}}. Tweakpane bietet eine Vielzahl unterschiedlicher GUI-Elemente, darunter Slider, Color-Picker und Accordion-Komponenten. Zudem sorgt die Bibliothek für eine einheitliche Darstellung über verschiedene Browser hinweg und ermöglicht eine visuelle Anpassung der Oberfläche mithilfe von Themes\footnote{\url{https://tweakpane.github.io/docs/theming/}}. Der zentrale Vorteil von Tweakpane gegenüber standardmässigen HTML5-GUI-Elementen liegt in der unkomplizierten Verknüpfung von Einstellungsparametern mit den entsprechenden Bedienelementen. Zur Erstellung eines Dropdown-Menüs für die Auswahl des Tone-Mappings müssen lediglich die verfügbaren Optionen sowie die auszuführende Aktion beim Selektieren eines Eintrags definiert werden (siehe Abbildung \ref{fig_tweaks_code}).
+Die bislang behandelten ästhetischen Elemente verfügen über eine Vielzahl einstellbarer Parameter. Um deren Auswirkungen auf die visuelle Gestaltung nachvollziehen zu können, ist es wichtig, dass diese Parameter während der Laufzeit über geeignete GUI-Elemente angepasst werden können. Für die Verknüpfung von Einstellungsparametern mit grafischen Bedienelementen stehen verschiedene Bibliotheken zur Verfügung. Eine in der Three.js-Community weitverbreitete Lösung ist Tweakpane\footnote{\url{https://tweakpane.github.io/docs}}. Tweakpane bietet eine Vielzahl unterschiedlicher GUI-Elemente, darunter Slider, Color-Picker und Accordion-Komponenten. Zudem sorgt die Bibliothek für eine einheitliche Darstellung über verschiedene Browser hinweg und ermöglicht eine visuelle Anpassung der Oberfläche mithilfe von Themes\footnote{\url{https://tweakpane.github.io/docs/theming}}. Der zentrale Vorteil von Tweakpane gegenüber standardmässigen HTML5-GUI-Elementen liegt in der unkomplizierten Verknüpfung von Einstellungsparametern mit den entsprechenden Bedienelementen. Zur Erstellung eines Dropdown-Menüs für die Auswahl des Tone Mappings müssen lediglich die verfügbaren Optionen sowie die auszuführende Aktion beim Selektieren eines Eintrags definiert werden (siehe Abbildung \ref{fig_tweaks_code}).
 
 \begin{figure}[H]
     \caption{Definitionsstruktur für ein Dropdown in Tweakpane (Eigene Darstellung)}
@@ -354,7 +354,7 @@ Die bislang behandelten ästhetischen Elemente verfügen über eine Vielzahl ein
     \label{fig_tweaks_code}
 \end{figure}
 
-Diese einfache Handhabung ermöglicht es, schnell neue Bedienelemente für zentrale Parameter zu konfigurieren. Abbildung \ref{fig_tweaks} zeigt eine Auswahl an GUI-Elementen (Tweaks), mit denen verschiedene Aspekte der Terrainvisualisierung in Echtzeit angepasst werden können.
+Diese einfache Handhabung ermöglicht es, auf effiziente Art und Weise, neue Bedienelemente für relevante Parameter zu konfigurieren. Abbildung \ref{fig_tweaks} zeigt eine Auswahl an GUI-Elementen (Tweaks), mit denen verschiedene Aspekte der Terrainvisualisierung in Echtzeit angepasst werden können.
 
 \begin{figure}[H]
     \caption{Tweaks der Terrain-Visualisierung (Eigene Darstellung)}
@@ -366,25 +366,25 @@ Diese einfache Handhabung ermöglicht es, schnell neue Bedienelemente für zentr
 In diesem Kapitel wird die Leistungsfähigkeit der Terrainvisualisierung evaluiert. Auf dieser Grundlage werden Leistungsengpässe identifiziert und die umgesetzten Optimierungsmassnahmen erläutert. Die Messungen wurden auf einem MacBook Pro M3 Max mit 64 GB Arbeitsspeicher durchgeführt. Als Testgebiet diente der Raum Chur mit einer Ausdehnung von 16km$^2$.
 
 \subsection{Im Vorfeld vorgenommene Optimierungen}
-Bereits vor der eigentlichen Messung wurden mehrere Optimierungen umgesetzt. Im Folgenden werden die wichtigsten Massnahmen kurz erläutert.
+Bereits vor der eigentlichen Messung wurden mehrere Optimierungen umgesetzt. Im Folgenden werden die wichtigsten Massnahmen beschrieben.
 
 \subsubsection{Auslagerung des Quadtree-Algorithmus in Web Worker}
-Webbrowser führen JavaScript-Code standardmässig in einem einzelnen Thread aus. Rechenintensive Operationen können dadurch die Visualisierung blockieren und zu wahrnehmbaren Verzögerungen führen. Durch den Einsatz von Web Workern lassen sich solche Berechnungen in separate Threads auslagern und im Hintergrund ausführen. Web Worker besitzen keinen Zugriff auf das \acrfull{DOM} des Browsers, weshalb unter anderem das direkte Laden von Texturen nicht möglich ist. Sie eignen sich jedoch für die Auslagerung rechenintensiver Algorithmen, wie beispielsweise des Quadtree-Algorithmus. Auf diese Weise können sowohl die Berechnung als auch das Ausbalancieren des Quadtrees im Hintergrund erfolgen, während sich der Main-Thread auf die Aktualisierung und Darstellung der daraus abgeleiteten 3D-Modelle konzentriert.
+Webbrowser führen JavaScript-Code standardmässig in einem einzelnen Thread aus. Rechenintensive Operationen können dadurch die Visualisierung blockieren und zu wahrnehmbaren Verzögerungen führen. Durch den Einsatz von Web Workern lassen sich solche Berechnungen in separate Threads auslagern und im Hintergrund ausführen. Web Worker besitzen keinen Zugriff auf das \acrfull{DOM} des Browsers, weshalb unter anderem das direkte Laden von Texturen nicht möglich ist. Sie eignen sich jedoch für die Auslagerung rechenintensiver Operationen, wie beispielsweise des Quadtree-Algorithmus. Auf diese Weise können sowohl die Berechnung als auch das Ausbalancieren des Quadtrees im Hintergrund erfolgen, während sich der Main-Thread auf die Aktualisierung und Darstellung der daraus abgeleiteten 3D-Modelle fokussieren kann.
 
 \subsubsection{Vorladen der Texturen}
-Um ein dynamisches Nachladen der Texturen einzelner Quadtree-Nodes zu vermeiden, werden diese bereits beim Start der Applikation vorgeladen. Zwar führt dies initial zu einer längeren Ladezeit, während der Laufzeit stehen die Texturen jedoch unmittelbar zur Verfügung, sodass Ladeverzögerungen vermieden werden.
+Um ein dynamisches Nachladen der Texturen einzelner Quadtree-Nodes zu vermeiden, werden diese bereits beim Start der Applikation vorgeladen. Dies führt zu einer initialen längeren Ladezeit, stellt jedoch sicher, dass während der Laufzeit keine weiteren Ladeverzögerungen auftreten und die Texturen unmittelbar verfügbar sind.
 
 \subsubsection{Frustum Culling}
-Wie in Kapitel \ref{chap_steuerungselemente} beschrieben, unterstützt Three.js verschiedene Kameratypen, die jeweils ein definiertes Sichtfeld (Frustum) besitzen. Um Rechenleistung zu sparen, werden Objekte ausserhalb dieses Sichtfeldes nicht gezeichnet. Dieses Verfahren wird als ``Frustum Culling'' bezeichnet. Zur Bestimmung, ob sich ein Objekt innerhalb oder ausserhalb des Sichtfeldes befindet, verwendet Three.js sogenannte ``Bounding Spheres''. Diese werden zur Laufzeit für jede Geometrie berechnet. Grundlage hierfür ist eine ``Bounding Box'', also ein dreidimensionaler Bereich, der die jeweilige Geometrie vollständig umschliesst (siehe rote markierte Bereiche in Abbildung \ref{fig_bounding_boxes}).
+Wie in Kapitel \ref{chap_steuerungselemente} beschrieben, unterstützt Three.js verschiedene Kameratypen, die jeweils ein definiertes Sichtfeld (Frustum) besitzen. Um Rechenleistung zu sparen, werden Objekte ausserhalb dieses Sichtfeldes nicht gezeichnet. Dieses Verfahren wird als ``Frustum Culling'' bezeichnet. Zur Bestimmung, ob sich ein Objekt innerhalb oder ausserhalb des Sichtfeldes befindet, verwendet Three.js sogenannte ``Bounding Spheres''. Diese werden zur Laufzeit für jede Geometrie berechnet. Grundlage hierfür ist eine ``Bounding Box'', also ein dreidimensionaler Bereich, der die jeweilige Geometrie vollständig umschliesst (siehe rote Bereiche in Abbildung \ref{fig_bounding_boxes}).
 \begin{figure}[H]
-    \caption{Visualisierung der Bounding Box (Eigene Darstellung)}
+    \caption{Visualisierung der Bounding Box einzelner Quadtree-Nodes (Eigene Darstellung)}
     \includegraphics[width=.4\linewidth]{content/00_assets/terrain_bounding_boxes.png}
     \label{fig_bounding_boxes}
 \end{figure}
 
 \newpage
 
-Die Bounding Box wird aufgrund der globalen Höhenwerte des Gebirges sowie der räumlichen Abdeckung der Quadtree Nodes berechnet. Auf Basis dieses Bereiches kann anschliessend die für das Frustum Culling notwendige Bounding Sphere berechnet werden (siehe Abbildung \ref{fig_berechnung_bounding_box}).
+Die Bounding Box wird aufgrund des globalen Höhenwertes des Gebirges sowie der räumlichen Abdeckung der Quadtree Nodes berechnet. Auf Basis dieses Bereiches kann anschliessend die für das Frustum Culling notwendige Bounding Sphere berechnet werden (siehe Abbildung \ref{fig_berechnung_bounding_box}).
 
 \begin{figure}[H]
     \caption{Berechnung der Bounding Box (Eigene Darstellung)}
@@ -393,10 +393,10 @@ Die Bounding Box wird aufgrund der globalen Höhenwerte des Gebirges sowie der r
 \end{figure}
 
 \subsubsection{Vorberechnung der Geometrie}
-Die grundlegende Geometrie aller Quadtree-Nodes ist identisch und unterscheidet sich lediglich in ihrer Grösse sowie in der jeweils verwendeten Index-Stitching-Variante (siehe Kapitel \ref{chap_visuelle_diskrepanz_zwischen_nodes}). Dadurch genügen neun vordefinierte Grundgeometrien, jeweils eine pro Index-Stitching-Variante, um das gesamte Gebirge darzustellen. Um aufwendige Berechnungen während der Laufzeit zu vermeiden, werden diese Geometrien bereits beim Start der Applikation vorberechnet. Während der Laufzeit müssen diese anschliessend lediglich den entsprechenden Quadtree-Nodes zugewiesen sowie passend positioniert und skaliert werden.
+Die grundlegende Geometrie aller Quadtree-Nodes ist identisch und unterscheidet sich lediglich in ihrer Grösse sowie in der jeweils verwendeten Index-Stitching-Variante (siehe Kapitel \ref{chap_visuelle_diskrepanz_zwischen_nodes}). Dadurch genügen neun vordefinierte Grundgeometrien, jeweils eine pro Index-Stitching-Variante, um das gesamte Gebirge darzustellen. Um aufwendige Berechnungen während der Laufzeit zu vermeiden, werden diese Geometrien bereits beim Start der Applikation vorberechnet. Während der Laufzeit müssen diese anschliessend lediglich den entsprechenden Quadtree-Nodes zugewiesen sowie entsprechend positioniert und skaliert werden.
 
 \subsection{Messung}
-Die Messung orientiert sich an den in Kapitel \ref{technologie_anforderungen} definierten Anforderungen. Zur Überwachung der Bildwiederholrate sowie weiterer relevanter Kennzahlen wie CPU- und GPU-Auslastung wird die Bibliothek stats-gl\footnote{\url{https://github.com/RenaudRohlinger/stats-gl}} eingesetzt. Ein wesentlicher Vorteil von stats-gl liegt in der unkomplizierten Integration in das Three.js-Framework. In einem ersten Schritt werden die zu erfassenden Metriken festgelegt (siehe \textit{trackFPS} und \textit{trackGPU} in Abbildung \ref{fig_statsgl}). Anschliessend wird stats-gl initialisiert und periodisch aktualisiert, um die Messwerte während der Laufzeit kontinuierlich zu erfassen.
+Die Messung orientiert sich an den in Kapitel \ref{technologie_anforderungen} definierten Anforderungen. Zur Überwachung der Bildwiederholrate sowie weiterer relevanter Kennzahlen wie CPU- und GPU-Auslastung wurde die Bibliothek stats-gl\footnote{\url{https://github.com/RenaudRohlinger/stats-gl}} eingesetzt. Ein wesentlicher Vorteil von stats-gl liegt in der unkomplizierten Integration in das Three.js-Framework. In einem ersten Schritt werden die zu erfassenden Metriken festgelegt (siehe \textit{trackFPS} und \textit{trackGPU} in Abbildung \ref{fig_statsgl}). Anschliessend wird stats-gl initialisiert und periodisch (pro Frame) aktualisiert.
 
 \begin{figure}[H]
     \caption{Integration von stats-gl in Three.js (Eigene Darstellung)}
@@ -420,7 +420,7 @@ Während der Navigation durch ein grösseres Gebirge, konkret die Region Chur, k
     \label{fig_webgpu_build_issue}
 \end{figure}
 
-Die genannte Methode ist für die Übersetzung des TSL-spezifischen Codes in die jeweilige Shadersprache verantwortlich (GLSL beziehungsweise WGSL). Diese Übersetzung erfolgt auf der CPU und kann bei komplexeren Shadern zu Leistungsengpässen führen. Beim WebGL-Backend entfällt dieser Schritt, da der Shadercode direkt in GLSL geschrieben wird. Ein weiterer Engpass, der sowohl im WebGPU- als auch im WebGL-Backend beobachtet wurde, ist das Dekodieren von Bilddateien. Wie in Abbildung \ref{fig_performance_issue_image_decode} dargestellt, werden im WebGL-Backend rund 40\% der gesamten Ausführungszeit für diesen Prozess aufgewendet.
+Die genannte Methode ist für die Übersetzung des TSL-spezifischen Codes in die jeweilige Shadersprache verantwortlich (GLSL bzw. WGSL). Diese Übersetzung erfolgt auf der CPU und kann bei komplexeren Shadern zu Leistungsengpässen führen. Beim WebGL-Backend entfällt dieser Schritt, da der Shadercode direkt in GLSL geschrieben wird. Ein weiterer Engpass, der sowohl im WebGPU- als auch im WebGL-Backend beobachtet wurde, ist das Dekodieren von Bilddateien. Wie in Abbildung \ref{fig_performance_issue_image_decode} dargestellt, werden im WebGL-Backend rund 40\% der gesamten Ausführungszeit für diesen Prozess aufgewendet.
 
 \begin{figure}[H]
     \caption{Dekodieren der Bilddateien (Eigene Darstellung)}
@@ -429,18 +429,18 @@ Die genannte Methode ist für die Übersetzung des TSL-spezifischen Codes in die
 \end{figure}
 
 \subsection{Optimierungen}
-Zur Behebung der Übersetzungsproblematik wurde entschieden, das WebGL-Backend anstelle des WebGPU-Backends einzusetzen. Three.js unterstützt den Wechsel des Grafik-Backends, sodass grosse Teile wiederverwendet werden konnten. Lediglich der Shadercode musste im Zuge der Umstellung von TSL auf GLSL angepasst werden (siehe Abbildung \ref{fig_vertex_shader_glsl_tsl}).
+Zur Behebung der Übersetzungsproblematik wurde das WebGL-Backend anstelle des WebGPU-Backends eingesetzt. Three.js unterstützt den Wechsel von Grafik-Backends, sodass grosse Teile wiederverwendet werden konnten. Lediglich der Shader-Code musste im Zuge der Umstellung von TSL auf GLSL angepasst werden (siehe Abbildung \ref{fig_vertex_shader_glsl_tsl}).
 \begin{figure}[H]
-    \caption{Unterschiede zwischen GLSL und TSL Code (Eigene Darstellung)}
+    \caption{Unterschiede zwischen GLSL und TSL Shader-Code (Eigene Darstellung)}
     \includegraphics[width=.6\linewidth]{content/00_assets/terrain_vertex_shader_glsl_tsl.png}
     \label{fig_vertex_shader_glsl_tsl}
 \end{figure}
 
-Zur Beseitigung des Dekodierungsengpasses wurde ein speziell für die Grafikkarte optimiertes Texturformat namens \acrfull{KTX}-Format\footnote{\url{https://github.khronos.org/KTX-Specification/ktxspec.v2.html}} eingesetzt. KTX-Texturen liegen bereits in einem für die GPU geeigneten Format vor und müssen nicht mehr zur Laufzeit dekodiert werden. Zu diesem Zweck wurde die Datenvorverarbeitung angepasst, sodass die Texturen zusätzlich im optimierten KTX-Format erzeugt werden.
+Zur Beseitigung des Dekodierungsengpasses bei Bildern wurde ein speziell für die Grafikkarte optimiertes Texturformat namens \acrfull{KTX}-Format\footnote{\url{https://github.khronos.org/KTX-Specification/ktxspec.v2.html}} eingesetzt. KTX-Texturen liegen bereits in einem für die GPU geeigneten Format vor und müssen nicht mehr zur Laufzeit dekodiert werden. Zu diesem Zweck wurde die Datenvorverarbeitung angepasst, sodass die Texturen zusätzlich zum Standardbildformat auch im optimierten KTX-Format erzeugt werden.
 
 \subsubsection{Zukünftige Optimierungsmöglichkeiten}
 \label{chap_future_optimizations}
-Mithilfe von Analysewerkzeugen wie SpectorJS\footnote{\url{https://spector.babylonjs.com}} lässt sich jedes einzelne Bild detailliert auf der Grafikhardware untersuchen. Dabei zeigte sich, dass für jede Geometrie ein eigener Draw Call an die Grafikkarte gesendet wird. Für die Region Chur sind somit rund 89 Draw Calls erforderlich (siehe Abbildung \ref{fig_spectorjs_draw_calls}). Diese Anzahl steigt mit der Zahl der Quadtree-Nodes und damit mit der Grösse des dargestellten Gebirges. Insbesondere auf leistungsschwächeren Endgeräten, wie etwa Smartphones, kann dies zu spürbaren Leistungsengpässen führen.
+Mithilfe von Analysewerkzeugen wie SpectorJS\footnote{\url{https://spector.babylonjs.com}} lassen sich die einzelnen Bilder auf der Grafikhardware untersuchen. Dabei zeigte sich, dass für jede Geometrie ein separater Draw Call an die Grafikkarte übermittelt wird. Für die Region Chur sind entsprechend rund 89 Draw Calls erforderlich (siehe Abbildung \ref{fig_spectorjs_draw_calls}). Diese Anzahl wächst mit der Zahl der Quadtree-Nodes und der Ausdehnung des dargestellten Gebirges. Insbesondere auf leistungsschwächeren Endgeräten, wie Smartphones, kann dies zu spürbaren Leistungsengpässen führen.
 
 \begin{figure}[H]
     \caption{SpectorJS - Anzahl Draw Calls für Region Chur (Eigene Darstellung)}
